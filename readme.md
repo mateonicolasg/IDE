@@ -72,4 +72,57 @@ Git es un sistema de control de versiones distribuido ampliamente utilizado en e
 ---
 ## Cuarta clase
     Fecha: 10 de noviembre
-### JAVA             
+### JAVA
+Java es un lenguaje de desarrollo de propósito general y como tal, es válido para realizar todo tipo de aplicaciones profesionales.
+
+![imagen 3](3.png)
+
+***Diferencias entre otros lenguajes***
+- Los programas creados por JAVA son independientes de la arquitectura.
+- Permite escribir Applets.
+> Un **applet** es un programa que puede incrustarse en un documento HTML, es decir en una página web.
+- Se pueden escribir aplicaciones para intraredes.
+- Aplicaciones cliente/ servidor.
+- Aplicaciones distribuidas en redes locales y en internet.
+- Es fácil de aprender y está bien estructurado.
+
+![imagen 4](4.jpg)
+
+***Características principales***
+- Es intrínsecamente Orientado a Objetos.
+- Funciona perfectamente en red.
+- Tiene gran funcionalidad gracias a sus librerías. **(clases)**
+- No tiene punteros manejables por el programador, aunque los maneja interna y transparentemente.
+- El manejo de memoria no es un problema, la gestiona el propio lenguaje y no el programador.
+- Genera aplicaciones con pocos errores posibles.
+- Incorpora Multi-Threading.
+> **Multi-Threading** Es la capacidad de ejecutar varios procesos o subprocesos a la vez, con el respaldo del sistema operativo.
+
+![imagen 5](5.png)
+### Sintaxis de JAVA
+```java
+package CLASES.IDE; // Todos los archivos permanecen a un paquete
+
+import java.lang.*; // Importar los paquetes para el proyecto
+
+// JAVA usa clases para ejecutar el código
+public class Person { 
+
+private String name; // Se debe indicar el tipo de dato
+     ----> // Modificadores de acceso: private, public, protected o ninguno.
+     |
+    public static void main(String[] args) {
+                        |
+                        ---> // El método principal en JAVA es el main
+        
+        Person friend = new Person (); // La palabra reservada new crea un objeto del tipo de dato especificado
+
+        friend.name = "David"; // Se utiliza ; para cada sentencia
+
+        System.out.println("Hola Mateo" + friend.name);
+    } // Se usan {} para identificar el bloque de código
+}
+```
+### Comandos para JAVA en una terminal
+1. **Compilar:** $ javac FileName.java
+2. **Ejecutar:** $ java FileName.java             
