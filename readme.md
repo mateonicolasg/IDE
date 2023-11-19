@@ -125,4 +125,27 @@ private String name; // Se debe indicar el tipo de dato
 ```
 ### Comandos para JAVA en una terminal
 1. **Compilar:** $ javac FileName.java
-2. **Ejecutar:** $ java FileName.java             
+2. **Ejecutar:** $ java FileName.java  
+----
+## Quinta clase
+    Fecha: 14 de noviembre del 2023
+### POO
+La programación orientada a objetos **(POO)** es un paradigma de programación que se basa en el concepto de "objetos". Estos objetos pueden contener:
+- **Datos:** En forma de campos o atributos.  
+- **Código:** En forma de procedimientos, conocidos como métodos.
+
+***Declaración de un método***
+
+![imagen 6](6.png)
+
+***Ámbito o modificadores de acceso***
+
+Los modificadores de acceso en Java son palabras clave que se utilizan para controlar el alcance o visibilidad de clases, variables, métodos y constructores en un programa. Estos modificadores determinan desde dónde se puede acceder a esos elementos en el código.
+
+| Visibilidad | Public | Protected | Default | Private|
+|------:      |:-----  |---------  |:------: |:------:|        
+|Desde la misma clase |    SÍ| SÍ      | SÍ     | SÍ       |
+|Desde cualquier clase del mismo paquete  | SÍ  | SÍ     | SÍ     | NO        |
+|Desde una subclase del mismo paquete |  SÍ   |  SÍ      |  SÍ     |   NO     |
+|Desde una subclase fuera del mismo paquete| SÍ    |SÍ, a través de la **herencia**    |  NO     |  NO      |
+|Desde cualquier clase fuera del paquete  | SÍ    |  NO      | NO      |    NO  |
