@@ -181,4 +181,8 @@ final int num = 20;
 ## Sexta clase
     Fecha: 16 de noviembre del 2023
 ### POO + JAVA
+**Clases:** Una clase es una plantilla o un plano para crear objetos. Define las propiedades (atributos) y comportamientos (métodos) que los objetos de esa clase tendrán.
+
+**Objetos:** Un objeto es una instancia específica de una clase. Se crea a partir de la plantilla proporcionada por la clase.
+
 ![imagen 9](9.png)
