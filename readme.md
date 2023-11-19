@@ -134,6 +134,8 @@ La programación orientada a objetos **(POO)** es un paradigma de programación 
 - **Datos:** En forma de campos o atributos.  
 - **Código:** En forma de procedimientos, conocidos como métodos.
 
+![imagen 8](8.png)
+
 ***Declaración de un método***
 
 ![imagen 6](6.png)
@@ -149,3 +151,34 @@ Los modificadores de acceso en Java son palabras clave que se utilizan para cont
 |Desde una subclase del mismo paquete |  SÍ   |  SÍ      |  SÍ     |   NO     |
 |Desde una subclase fuera del mismo paquete| SÍ    |SÍ, a través de la **herencia**    |  NO     |  NO      |
 |Desde cualquier clase fuera del paquete  | SÍ    |  NO      | NO      |    NO  |
+ 
+***Estructuras de control***
+
+Las estructuras de control son componentes fundamentales en la programación que permiten modificar el flujo de ejecución de un programa. 
+
+![imagen 7](7.png)
+
+***Tipos de dato***
+```java
+byte entero;
+    entero = 12;
+short entero1 = 12456;
+int entero2 = 2121322;
+long entero3 = 324323512;
+float decimal = 3.45f; //Se coloca f al final
+double decimal2 = 3.3243434;
+//Caracteres
+char caracter = 'a';
+//Booleanos
+boolean decision = true;
+//Datos no primitivos
+Integer numere = null;
+//Cadenas
+String palabra = "Hola q tal?";
+//Constantes
+final int num = 20;
+```
+## Sexta clase
+    Fecha: 16 de noviembre del 2023
+### POO + JAVA
+![imagen 9](9.png)
