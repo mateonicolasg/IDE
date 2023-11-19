@@ -158,6 +158,31 @@ Las estructuras de control son componentes fundamentales en la programación que
 
 ![imagen 7](7.png)
 
+***Documentación***
+```java
+/**
+ * Ejemplos de testing java
+ * @author: mateonicolasg
+ * @version: 1.0
+ */
+public class Testing {
+    /**
+     * valida la compilación del java
+    */
+    public static void TestJava(){
+        System.out.println("java está lista")
+    }
+    /**
+     * valida la compilación del java con saludo 
+     * @param nombre: Mateo Simbaña
+     * @param fecha: 19 de noviembre del 2023
+     * @return un saludo 
+    */
+    public static String TestJavaSaluda (String nombre, String fecha){
+        return "java  te saluda " + nombre + " " + fecha;
+    }
+}
+```
 ***Tipos de dato***
 ```java
 byte entero;
@@ -178,6 +203,7 @@ String palabra = "Hola q tal?";
 //Constantes
 final int num = 20;
 ```
+-----
 ## Sexta clase
     Fecha: 16 de noviembre del 2023
 ### POO + JAVA
@@ -186,3 +212,8 @@ final int num = 20;
 **Objetos:** Un objeto es una instancia específica de una clase. Se crea a partir de la plantilla proporcionada por la clase.
 
 ![imagen 9](9.png)
+
+---
+## Séptima clase
+    Fecha: 16 de noviembre del 2023
+###
