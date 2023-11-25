@@ -216,4 +216,92 @@ final int num = 20;
 ---
 ## Séptima clase
     Fecha: 16 de noviembre del 2023
-###
+### JAVA
+Para trabajar POO en JAVA se necesita de tres cosas:
+- **Propiedades:**  Los atributos son las características o propiedades que definen el estado de un objeto. 
+- **Constructor:** El constructor es un método especial que se llama automáticamente al crear un objeto. En él, se definen las propiedades iniciales del objeto. 
+- **Métodos:** Estos métodos permiten obtener y actualizar los valores de las propiedades de manera controlada, siguiendo los principios de encapsulamiento.
+
+***Tipos de bucles*** 
+Los bucles siempre tienen estas partes
+inicio ---> condición ---> cuerpo  ---> actualización o cambio de estado 
+
+Además, se pueden clasificar de la siguiente manera:
+
+**Machos**
+
+No le gusta pedir permiso al principio.
+
+- ***Do while:*** Similar al bucle while, pero la condición se evalúa al final del bloque, lo que garantiza que el bloque de código se ejecute al menos una vez antes de verificar la condición.
+```java
+// Ejemplo:        
+int contadorDoWhile = 0;
+do{
+    System.out.println("DoWhile " + contadorDoWhile++);
+}while(contadorDoWhile < nroTerminos);
+```
+**Mandarinas**
+
+Siempre pide permiso.
+
+- ***While:*** Ejecuta un bloque de código mientras una condición dada sea verdadera. La condición se verifica antes de cada iteración. Si la condición es falsa desde el principio, el bloque de código no se ejecutará. 
+```java
+// Ejemplo:
+int contadorWhile = 0;
+    while(contadorWhile < nroTerminos){
+        System.out.println("While " + contadorWhile++);
+    };
+```
+> En ocasiones el bucle **while** puede parecerse a un bucle **medio macho**.
+- ***For:*** Itera sobre una secuencia o ejecuta un bloque de código un número específico de veces. En cada iteración, toma el siguiente elemento de la secuencia.
+```java
+// Ejemplo:
+for (int i = 0; i < nroTerminos; i++) {
+        System.out.println("For : " + i);
+    }
+```
+***Todos los tipos de dato***
+1. **Tipos de datos primitivos:** Se ocupan para las variables. 
+```java
+byte bin = 0;
+boolean b= true;
+char c = 'a';
+c =54; //Numero ASCII
+short edad = 3278;
+int num = 20;
+```
+2. **Tipos de datos referencia:** Se ocupan dentro de las propiedades.
+```java
+String cad = "Hola mateonicolasg";
+Long ll = 123L;
+Integer n = 23;
+Double dbl = 23.23;
+Float ff = 13.2f;
+Boolean boo = false;
+Character ch = 'x';
+String [] arr = {"uno", "dos", "tres"};
+```
+3. **Cast:** Se dividen en explícitos e implícitos.
+```java
+long l = 10L; //explícito
+float f = 10f; //explícito 
+double d = 10d;
+
+//cast explícito
+ll = (long)n;
+dbl = (double)ff;
+
+//cast implícito
+n = n / 2; //11.5  
+```
+4. **Conversiones:** Utilizan la fuerza bruta.
+```java
+cad = n.toString();
+cad = ff.toString();    
+n = Integer.parseInt(cad);
+```
+5. **Tipos de datos Objeto:** 
+```java
+Persona oPersona = new Persona ("Juan", 23);
+Mujer oMujer = new Mujer();
+```s
