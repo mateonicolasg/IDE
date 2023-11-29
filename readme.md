@@ -346,7 +346,7 @@ String S5 = new String("");         // Instancia
 
 ***Unmutable y mutable Strings***
 
-**Unmutable:**  Una vez que se crea un objeto String, su contenido no puede ser cambiado.
+**Unmutable:**  Una vez que se crea un objeto String, su contenido no puede ser cambiado. 
 **Mutable:** Permiten con el tiempo ir haciendo cambios en la variable.
 
 A continuación se muestran los diferentes tipos de mutabilidad:
@@ -432,3 +432,151 @@ System.out.println("Substring: " + str.substring(3));
 System.out.println("Substring: " + str.substring(3,6));
 System.out.println("Substring: " + str.substring(3,str.length()));
 ```
+---
+## Novena clase
+    Fecha: 29 de noviembre del 2023
+### Strings parte 2
+
+**Continuación operaciones con Strings**
+
+- Reemplazar un caracter por otro:
+```java
+String subStr2 = str.replace('a', 'A');  //abc123!@#$
+System.out.println("str.replace('a', 'A'): " + subStr2);
+``` 
+- Convertir todo a mayúsculas o minúsculas:
+```java
+String subStr3 = str.toUpperCase();  // Mayúsculas
+System.out.println("toUpperCase: " + subStr3);
+String subStr4 = str.toLowerCase();  // Minúsculas
+System.out.println("toLowerCase: " + subStr4)
+```
+- Dividir una cadena:
+```java
+String strSplit [] = str.split("\\.");     // gfg.abc.123.*-+.abc
+System.out.println("str.split(\".\"): " + str);
+for (String subS : strSplit)
+    System.out.println(subS);
+```
+- Cadena en array de caracteres:
+> No necesariamente necesita de una variable.
+```java
+for (char c1 : str.toCharArray()){       // {'g', 'f', 'g', ... . a b c.123.*-+.abc}
+    System.out.println(c1);
+}
+for (char c1 : "abcde".toCharArray()){
+    System.out.println(c1);
+}
+```
+- Nos muestra la posición de la primera vez en la que se muestra un determinado patrón de caracteres:
+```java
+int indice123 = str.indexOf("123");  //gfg.abc.123.*-+.abc
+System.out.println("indexof(): Indice de la primera ocurrencia 123 = " + indice123);
+```
+- Proceso de conversión de una variable para añadir a un string:
+```java
+str = str.concat(String.valueOf(10));
+System.out.println("str = " + str);
+```
+- Determinar si una cadena tiene un determinado caracter:
+```java
+if (str.contains("x"))
+    System.out.println("contain(x): La cadena contiene \"x\": " + true);
+else
+    System.out.println("contain(x): La cadena no contiene \"x\": " + false);
+```
+- Eliminar espacios a la izquierda y a la derecha de un string:
+```java
+String nombre = "     Mateo Simbaña      ";
+nombre = nombre.trim();
+System.out.println("Nombre es: " + nombre);
+```
+### Scanner
+Toma información desde la consola.
+
+Una manera de pedir datos al usuario dentro de la terminar es utilizando **Scanner** dentro de la clase.
+```java
+Scanner sc = new Scanner(System.in);
+String nombre = sc.nextLine();
+``` 
+Otra manera **más efectiva** de hacerlo es poniendo el **Scanner** en la App.java.
+```java
+public static Scanner scApp = new Scanner(System.in);
+String nombre = App.scApp.nextLine();
+```
+**Tipos de datos captados con Scanner**
+1. **nextInt ():** Toma un valor tipo int.
+2. **nextLong ():** Toma un valor tipo long.
+3. **nextFloat ():** Toma un valor tipo float.
+4. **nextDouble ():** Toma un valor tipo double.
+
+Todos estos se saltan los espacios dejados en blanco hasta encontrar un respectivo valor del tipo que utilicemos.
+
+5. **next():** Salta los espacios dejados en blanco hasta que encuentra un token. Devuelve el token como un valor tipo String.
+## POO: Array - List
+Los **arreglos** son estructuras de datos que permiten almacenar múltiples elementos del mismo tipo en una sola variable.
+
+Los **arreglos de tipo dinámicos** permiten trabajar con conjuntos de datos cuyo tamaño puede variar a lo largo del tiempo, evitando la necesidad de definir un tamaño fijo al principio y facilitando la gestión de la memoria.
+
+**Ejemplo:**
+```java
+int matriz [][] = {{1,2,3}
+                    ,{1,2,3,4,5}
+                    ,{1,2,3}
+                    };
+```
+El **forache** es una estructura de control que permite recorrer elementos de una colección o arreglo. Su sintaxis simplificada facilita la iteración sobre los elementos de una colección sin la necesidad de trabajar con índices o contadores.
+
+**Ejemplo:**
+```java
+for (int[] an : matriz) {
+    for (int n : an) {
+        System.out.print(" " + n);
+    }
+    System.out.println("");
+}
+```
+***Operadores aritméticos***
+|   Operador    | Nombre    | Ejemplo  |
+| ------------- |:----------| -----:   |
+|      +        |  Adición  | x + y    |
+|      -        |  Resta    | x - y    |
+|      *        |Multiplicación| x * y |
+|      /        |  División | x / y    |
+|      %        |  Módulo   | x % y    |
+|     ++        | Incremento| x++      |
+|     --        |Decremento | --y      |
+
+|   Operador    | Nombre    | Ejemplo           |
+| ------------- |:----------| -----:            |
+|      &&       |  y        |x > 3 && x < 10    |
+|      ''       |  o        |x > 3  '' < 10     |
+|      !        |  no       |!(x > 3 && x < 10) |
+
+|   Operador    | Nombre             | Ejemplo  |
+| ------------- |:----------         |  -----:  |
+|      ==       |  igual             | x = y    |
+|      !=       | no igual           | x != y   |
+|      >        | mayor que          | x > y    |
+|      <        | menor que          | x < y    |
+|      >=       |mayor o igual que   | x >= y   |
+|      <=       |menor o igual que   | x <= y   |
+
+|   Operador    |  Ejemplo  | Igual a  |
+| ------------- |:--------  | -----:   |
+|      =        |  x = 5    | x = 5    |
+|      +=       |  x += 3   |x = x + 3 |
+|      -=       |  x -= 3   |x = x - 3 |
+|      *=       |  x *= 3   |x = x * 3 |
+|      /=       |  x /= 3   |x = x / 3 |
+|      %=       |  x %= 3   |x = x % 3 |
+|      &=       |  x &= 3   |x = x & 3 |
+|      '=       |  x '= 3   |x = x ' 3 |
+|      ^=       |  x ^= 3   |x = x ^ 3 |
+|     >>=       | x >>= 3   |x = x >> 3|
+|     <<=       | x <<= 3   |x = x << 3|
+
+---
+## Décima clase
+    Fecha: 30 de noviembre del 2023
+###
