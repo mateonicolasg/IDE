@@ -304,4 +304,131 @@ n = Integer.parseInt(cad);
 ```java
 Persona oPersona = new Persona ("Juan", 23);
 Mujer oMujer = new Mujer();
-```s
+```
+---
+## Octava clase
+    Fecha: 28 de noviembre del 2023
+### String
+> **Refactorizar** significa organizar, limpiar, mejorar el código. 
+
+Un **string** es una secuencia de caracteres, es un array (arreglo) dinámico.
+
+- Si dos variables tipo ***String*** tienen el mismo contenido, JAVA se encarga de que ocupen el mismo espacio de memoria.
+- Si quiero segmentar un espacio de memoria diferente para cada una de mis variables tipo ***String*** se ocupará lo siguiente:
+
+```java
+String cad1 = new String ()
+```
+![imagen 10](10.png)
+
+ **Pila o stack:** Es una región de memoria donde se almacenan variables locales y datos relacionados con la ejecución de funciones en un programa. 
+
+ **Montón heap:** Es una región de memoria más libre y dinámica que se utiliza para asignar memoria de manera más flexible durante la ejecución de un programa.
+
+***Conceptos fundamentales***
+- **Compilación:** El proceso de compilación verifica si el código cumple con la sintaxis del lenguaje, identifica errores y genera el código ejecutable.
+- **Referencia:** Es como un "puntero" que apunta a la ubicación en memoria del objeto, pero se utiliza de manera más segura y abstracta. 
+- **Declaración:** Se refiere a la especificación del tipo y nombre de una variable.
+- **Inicialización:** Es el proceso de asignar un valor inicial a una variable después de declararla.
+- **Instanciación:** Se refiere al proceso de crear un objeto de una clase.
+
+**Ejemplo:**
+
+```java
+String S0;                   // Declara
+String S1 = "TAT";           // Inicialización 
+String S2 = "TAT"; 
+String S3 = new String ("TAT");     // Instancia e inicialización 
+String S4 =  new String ("TAT");
+String S5 = new String("");         // Instancia
+```
+> Si se crea un objeto sin referencia, el **Virtual Machine** limpia el Heap y los elimina mediante el **Garbage Collection**.
+
+***Unmutable y mutable Strings***
+
+**Unmutable:**  Una vez que se crea un objeto String, su contenido no puede ser cambiado.
+**Mutable:** Permiten con el tiempo ir haciendo cambios en la variable.
+
+A continuación se muestran los diferentes tipos de mutabilidad:
+
+```java
+String str = "Hola, como estas";
+
+StringBuilder sb = new StringBuilder(); //Inicia la mutabilidad
+StringBuffer stringBuffer = new StringBuffer("hola stringBuffer");
+
+sb.append(str);
+sb.append(" hoy ");          //Permite agregar más palabras
+sb.append( "martes");
+System.out.println("sb = " + sb);
+
+str = str.concat(" hoy ");       //Permite agregar más palabras
+str = str.concat( "martes ");      
+System.out.println("String = " + str);
+
+System.out.println("stringBuffer: " + stringBuffer);
+```
+***Operaciones con Strings***
+- Se puede crear una cadena a partir de un arreglo de números o de caracteres:
+```java
+byte ascii [] = {71, 70, 72, 73, 75};
+String cad = new String(ascii);
+System.out.println("Cadenada creada con ASCCI: " + cad);
+```  
+- Se pueden concatenar varias cadenas:
+```java
+String cad1 = new String(cad + cad2);
+System.out.println("Cadena unida: " + cad1);
+```
+- Recortar una cadena:
+```java
+String cadAsc = new String(ascii, 2, 2);    //Empieza en la posición 2 y toma 2 caracteres
+        System.out.println("ASCII de la cadena: " + cadAsc);
+```
+- Tamaño de la cadena:
+```java
+int tamCad = cad.length();
+        System.out.println("Tamaño de la cadena: " + tamCad);
+```
+- Obtener un caracter de un string:
+```java
+String str = "abc123!@#$";
+System.out.println("Obtener un caracter >>> str.charAt(2): " + str.charAt(2));
+```
+- Comparar objetos o referencias:
+```java
+String sVar1 = new String("Hola");
+String sVar2 = new String("Hola");
+
+if (sVar1 == sVar2)     // objetos
+    System.out.println("Son iguales");
+else
+    System.out.println("No son iguales");
+```
+- Comparar el contenido de objetos:
+```java
+String S3 = new String("Hola");
+String S4 = new String("Hola");
+
+if (S3.equals(S4))     // contenido
+    System.out.println("Son iguales");
+else
+    System.out.println("No son iguales");
+```
+- Comparar el contenido ignorando las mayúsculas:
+```java
+String S3 = new String("Hola");
+String S4 = new String("HOLA");
+
+if (S3.equals(S4))     
+    System.out.println("Son iguales");
+else
+    System.out.println("No son iguales");
+```
+- Substring
+```java
+String str = "abc123!@#$";
+System.out.println("Substring: " + str.substring(3));
+System.out.println("Substring: " + str.substring(3,6));
+System.out.println("Substring: " + str.substring(3,str.length()));
+```
