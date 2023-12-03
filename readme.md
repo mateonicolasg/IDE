@@ -513,7 +513,7 @@ String nombre = App.scApp.nextLine();
 Todos estos se saltan los espacios dejados en blanco hasta encontrar un respectivo valor del tipo que utilicemos.
 
 5. **next():** Salta los espacios dejados en blanco hasta que encuentra un token. Devuelve el token como un valor tipo String.
-## POO: Array - List
+### POO: Array - List parte 1
 Los **arreglos** son estructuras de datos que permiten almacenar múltiples elementos del mismo tipo en una sola variable.
 
 Los **arreglos de tipo dinámicos** permiten trabajar con conjuntos de datos cuyo tamaño puede variar a lo largo del tiempo, evitando la necesidad de definir un tamaño fijo al principio y facilitando la gestión de la memoria.
@@ -578,5 +578,90 @@ for (int[] an : matriz) {
 
 ---
 ## Décima clase
+    Fecha: 30 de noviembre del 2023
+### Array - List parte 2
+
+> Lo ideal es que el **main** esté fuera de los objetos para iniciar el proceso de ejecución.  
+
+***static***
+
+Los métodos estáticos salen de los objetos. Solo existe un único punto de acceso para todo el sistema. Además es la mejor manera para no gastar tanta memoria.
+
+Tiene varios propósitos, entre ellos se destacan dos:
+
+1. **Método estático:** Este método puede ser llamado directamente a través de la clase sin necesidad de crear una instancia de esa clase. Se asocian con la clase en sí y no con objetos individuales de esa clase.
+
+2. **Variable estática:** Esa variable se comparte entre todas las instancias (objetos) de esa clase. Esto significa que cualquier cambio realizado en esa variable será reflejado en todas las instancias de esa clase.
+
+***final***
+
+Cuando se la utiliza en una **variable** se está indicando que su valor no puede ser modificado una vez asignado. Es decir, se convierte en una constante solo de lectura.
+
+Si no está colocada la palabra **final** entonces esa variable puede ser de lectura o de escritura.
+
+![imagen 11](11.png)
+
+***Importancia del operador módulo***
+
+Es un operador aritmético que devuelve el residuo de la división entre dos números.
+
+Su uso puede simplificar cálculos, optimizar algoritmos y facilitar la resolución de problemas específicos en la programación.
+
+**Uso para una barra de carga:**
+```java
+public void ejemploModulo(){
+    String sim[] = {"|", "/", "-", "\\"};
+
+    for (int i = 0; i <= 100; i++) {
+        String c = sim[i%4];
+        System.out.println("\r" + c + " " + i + " %");
+
+        try {Thread.sleep(100);}      // Delay
+        catch(InterruptedException ie){}
+    }
+}
+```
+> **\r** significa retorno de carro, es decir, que presente la información siempre al inicio.
+
+***String[] args***
+
+Al momento de arrancar el programa podemos tomar información o parámetros que ingresan al momento de arrancar el programa. 
+
+ **args** en el método main de Java permite recibir argumentos desde la línea de comandos al ejecutar un programa, lo que brinda flexibilidad y personalización a la ejecución del programa sin necesidad de modificar su código fuente.
+
+***split***
+
+Es un método que se utiliza para dividir una cadena (String) en subcadenas más pequeñas basándose en un delimitador dado. El resultado es un arreglo de subcadenas.
+
+***Variable var***
+
+Patea con las dos piernas, tiene varios comportamientos.
+Por lo tanto, cuando se utiliza **var**, el compilador infiere el tipo de la variable basándose en el contexto en el que se declara. 
+
+#### Array-List
+
+Lista dinámica cuya función es guardar lo que el programador desee.
+
+```java
+ArrayList<String> lstStrings = new ArrayList<>();
+ArrayList<Integer> lstInt = new ArrayList<>();
+ArrayList<mujer> lstMujereList = new ArrayList<>();
+
+lstStrings.add("abc");  // añadimos elementos 
+lstStrings.add("123");
+System.out.println(lstStrings);
+```
+
+Para crear una lista de objetos:
+
+```java
+mujer m1 = new mujer("Juana");  // Creo el objeto y luego lo meto en la lista
+lstMujeres.add(m1);
+lstMujeres.add(new mujer("Joyce"));  // Lo creo al objeto directamente dentro de la lista
+```
+Sin embargo, para mostrar lo que se tiene dentro de la lista, **se necesita utilizar un bucle**.
+
+ ---
+## Onceava clase
     Fecha: 30 de noviembre del 2023
 ###
