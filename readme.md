@@ -664,4 +664,113 @@ Sin embargo, para mostrar lo que se tiene dentro de la lista, **se necesita util
  ---
 ## Onceava clase
     Fecha: 30 de noviembre del 2023
-###
+### Array - List parte 3
+
+El bucle **forache** juega un papel fundamental, puesto que se encarga de presentar las listas de las que no se conocen el tamaño previamente.
+
+- Si se desea poner un elemento u objeto en una determinada posición dentro del Array - List, se hace lo siguiente:
+
+```java
+lstMujeres.add(1,new mujer("Maria"));
+```
+
+- Para eliminar un objeto o elemento de la lista tenemos dos formas:
+
+***Mediante la referencia***
+
+```java
+lstMujeres.remove(m1);
+```
+***Mediante la posición***
+```java
+lstMujeres.remove(3);
+```
+
+- Colocar un objeto o elemento con la posición en la que deseo ubicarlo:
+```java
+lstMujeres.remove(3);
+```
+
+- Obtener un elemento de una determinada lista:
+```java
+mujer m = lstMujeres.get(1);
+```
+
+- Obtener información de ese elemento:
+```java
+String nombre = lstMujeres.get(1).nombre;  // Mediante la variable
+System.out.println(nombre);
+String nombre = lstMujeres.get(1).presentar(); // Una mejor manera de obtener información
+System.out.println(m.presentar());  // Mediante un método
+```
+> Se puede acceder a las variables siempre y cuando sean públicas.
+
+- Para modificar una variable que está publica:
+```java
+for (mujer mujer : lstMujeres) {
+    System.out.println(mujer.presentar() + " Edad: " + mujer.edad);
+    mujer.edad -= 5;  // Resta 5 años a la edad de todas las mujeres
+}
+```
+> Cuando se trabaja con objetos pasamos las **referencias**, por eso debemos tener cuidado en alterar esos espacios de memoria.
+- A través de métodos podemos cambiar el valor de las variables:
+```java
+private static void CambiaEdad(mujer m){
+    m.edad -= 5;    
+}
+for (mujer mujer : lstMujeres)    //Llama al método y cambia la edad de todos los objetos mujer.
+    CambiaEdad(mujer);
+```
+> Cuando recorremos la lista con un for y hacemos algún cambio, le estamos cambiando el contenido de todos los objetos creados.
+
+- Dos listas apuntan al mismo espacio de memoria:
+```java
+ArrayList<mujer> lstAmigas = lstMujeres;
+```
+Si modifico una variable en una lista, lo mismo le va a pasar a la otra.
+
+- Clonar una lista en un nuevo espacio de memoria:
+```java
+ArrayList<mujer> lstAmigas = new ArrayList<mujer>(lstMujeres);
+```
+***Wrapper***
+También conocido como **boxing**,es un tema de conversión, similar a un casting. Se refiere a pasar de un tipo de dato primitivo a un tipo de dato por referencia.
+
+Al proceso contrario se lo denomina **unboxing**.
+
+Cuando se ocupa otro tipo de variable en una lista, esta ejecuta un proceso de boxing, unboxing.
+
+>Si se conoce el número de elementos que se va a utilizar en un programa, trabajamos con un **array** normal, puesto que va a ocupar menos memoria y son más rápidos.
+
+### List
+Funciona igual que un Array-List porque son de la misma familia. La lista es un poco más liviana.
+
+Tiene casi las mismos métodos que un Array - List.
+
+- Obtener una información de un elemento a través de su posición:
+```java
+String s = lstNombre.get(1);
+```
+
+- Obtener la posición de un determinado elemento:
+```java
+int posicion = lstNombre.indexOf("Isra");
+```
+- Colocar a un elemento en una posición en especial:
+```java
+lstNombre.set(0, "Luis");
+```
+- Conocer el tamaño de la lista:
+```java
+lstNombre.size();
+```
+- Podemos utilizarla para crear una lista de un  objeto:
+```java
+List<mujer> lstMujeres = new ArrayList<>();
+```
+
+***Hashtable***
+
+Un **hashtable** es una estructura de datos que se utiliza para almacenar datos en una colección asociativa. Funciona asociando claves con valores. Utiliza una función de hash para calcular un índice que mapea la clave con un valor en la tabla hash.
+
+Es muy útil para guardar y buscar información rápidamente.
