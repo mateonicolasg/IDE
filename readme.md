@@ -774,3 +774,222 @@ List<mujer> lstMujeres = new ArrayList<>();
 Un **hashtable** es una estructura de datos que se utiliza para almacenar datos en una colección asociativa. Funciona asociando claves con valores. Utiliza una función de hash para calcular un índice que mapea la clave con un valor en la tabla hash.
 
 Es muy útil para guardar y buscar información rápidamente.
+
+ ---
+## Doceava clase
+    Fecha: 5 de diciembre del 2023
+### Programación Orientada a Objetos - Parte 2
+
+> **HASHTABLE:** Útil para aspectos de balanceo (podemos organizar información de acuerdo al tamaño de los nombres).
+
+Mundo real ---> paradigma orientado a objetos ----> POO (JAVA)
+
+**Objeto:** Mujer 
+
+**Características:** Ver y saber lo que tiene.
+
+- altura = 160 cm
+- peso = 50 kg
+- edad = 20 años
+- nombre = Ana
+
+> ***Dato:*** Valor, que si le asocio algo tiene información.
+
+**Acciones:**
+
+- cantar() --->	Para cantar necesito la boca, manos  
+- correr()               
+- bailar()                                
+- Saltar(3)		
+> **Parámetros:** Caracterizan la acción, le damos un fin.
+
+
+***Tipos de dato***
+- **primitivo**	---> stack
+- **referencia** ---> heap
+- **objeto** ---> heap
+
+**Evento:** Ocurrencia, se establecen con gerundios.
+
+escuch ANDO()
+
+sinti ENDO()
+
+***Ámbito***
+
+Variables globales o locales
+
+1. **public** ---> altura, peso, correr()
+2. **private** ---> secreto, bañar()
+3. **protected** ---> edad, cantar()
+4. **friendly**
+
+#### Ejemplo
+**Tarjeta de crédito**
+![imagen 12](12.png)
+
+**Propiedades:**
+
+tipo de tarjeta, nombre, fecha de caducidad, número de tarjeta, código de seguridad, saldo, cupo, clave
+
+**Acciones:**
+
+- retirar(cantidad)
+- cambiarClave()
+- consultarSaldo()
+- pagar()
+
+> Todas las **clases** tienen que ser  públicas.
+
+**Personalizar variables:** Declarar variables
+
+private String nroTarjeta
+
+    No lo vas a a operar, por tanto es un String (ahorras memoria)
+ ---
+## Treceava clase
+    Fecha: 6 de diciembre del 2023
+### EJEMPLO POO (TARJETA DE CRÉDITO)
+**PROPIEDADES**
+1. Bosquejar, prototipar el prototipo (datos)
+
+2. Describir que es cada cosa (nombre de datos)
+3. Campos 
+
+clave ---> May, Min, Char 
+
+monto
+
+
+**MÉTODOS** (verb)
+
+- Pagar()
+- CambiarClave(claveActual, clave nueva, claveConf)
+- Consultar()					    
+- Retirar(cantidad)
+
+> Pueden devolver: void(), true/false o un mensaje.
+
+**PROGRAMAR**
+
+> Compilador ve la clase si está pública.
+
+**Siempre en mayúscula la primera letra del nombre de la clase.**
+
+***Técnica 1***
+
+```java
+public class TarjetaCredito {
+	private String nombreUsuario;
+	private String claveUsuario;
+    ...
+}
+```
+**setter:** escribir
+```java
+setN(int n)
+	this.n = n;
+
+public void setnombreUsuario(String nombreUsuario){
+	if (nombreUsuario.equals(""))	//Valora la entrada
+		this.nombreUsuario = "Usuario no definido"
+	else 
+		this.nombreUsuario = nombre.Usuario;
+}
+```
+
+**getter:** leer
+```java
+getN()
+
+public String (){
+	return this.nombreUsuario.toUpperCase();
+}
+public void setClase(String claveUsuario){
+	if (claveUsuario > 8)
+	if (claveMinuscula)
+	if (clave Mayúscula)
+	this.claveUsuario = md5(claveUsuario)
+}
+```
+
+**Variable, sin get o setter SOLO PROPIEDADES**
+
+**Ejemplo Método**
+```java
+public String cambiarClaveUsuario (String claveUsuarioAnt, String claveUsuarioNew, String claveUsuarioNewRescrita){
+	String observacion = "";	
+	if (!claveUsuarioAnt.equals(get.claveUsuario()))
+		observacion = "Su clave no es igual a la actual";
+	if (!claveUsuarioNew.equals(claveUsuarioNewRescrita))
+		observacion = "Su clave new es diferente a la anterior";
+	if (!observacion.equals(""))
+		setClaveUsuario(claveNueva)
+	return (observacion.equals("") ? "All ok" : observacion);
+		  //    condicional        +  si no   -  ---> Devuelve una variable
+}
+```
+**Main**
+```java
+main(){
+	TarjetaCredito tc = new TC();
+	tc.tipoTarjetaCredito = "Bono";  //No puede defenderse
+	tc.getTipoTC();
+	//Aquí se genera la entrada y salida de datos
+}
+```
+ ---
+## Catorceava clase
+    Fecha: 7 de diciembre del 2023
+### Lenguaje Unificado de Modelado (UML)
+
+1. ***Use Case***
+- **Use case:** proceso = acción = verbo
+- **Actor:** <sujeto/objeto/cosa> ---> afecta al sistema
+- **Boundary:** Dominio - módulo
+- **Dirección**
+- **Jerarquía/herencia**
+- <<**extends**>>**:** opcional
+- <<**include**>>**:** obligatorio
+
+**Ejemplo**
+
+![imagen 12](13.png)
+
+2. ***Diagramas de clases*** (interfaz, herencia)
+
+|Nombre     |    
+|-----------|
+|Propiedades|  
+|Métodos    |  
+
+***Ámbito***
+
+**"+"** public
+
+**"-"** private
+
+**"#"** protected
+
+**Ejemplo completo**
+
+<span style="color:red">Supermaxi</span> desea automatizar las <span style="color:blue">ventas</span> insitu para que el <span style="color:red">cliente</span> <span style="color:blue">pague</span> con <span style="color:red">tarjeta de crédito</span>.
+
+***Use case***
+
+![imagen 14](14.png)
+
+***Diagrama de clase***
+
+1. 
+
+![imagen 15](15.png)
+
+2. 
+
+![imagen 16](16.png)
+
+ ---
+## Quinceava clase
+    Fecha: 12 de diciembre del 2023
+### 
