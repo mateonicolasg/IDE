@@ -494,7 +494,7 @@ System.out.println("Nombre es: " + nombre);
 ### Scanner
 Toma información desde la consola.
 
-Una manera de pedir datos al usuario dentro de la terminar es utilizando **Scanner** dentro de la clase.
+Una manera de pedir datos al usuario dentro de la terminal es utilizando **Scanner** dentro de la clase.
 ```java
 Scanner sc = new Scanner(System.in);
 String nombre = sc.nextLine();
@@ -625,7 +625,7 @@ public void ejemploModulo(){
 
 ***String[] args***
 
-Al momento de arrancar el programa podemos tomar información o parámetros que ingresan al momento de arrancar el programa. 
+Podemos tomar información o parámetros que ingresan al momento de arrancar el programa. 
 
  **args** en el método main de Java permite recibir argumentos desde la línea de comandos al ejecutar un programa, lo que brinda flexibilidad y personalización a la ejecución del programa sin necesidad de modificar su código fuente.
 
@@ -991,5 +991,326 @@ main(){
 
  ---
 ## Quinceava clase
-    Fecha: 12 de diciembre del 2023
-### 
+    Fecha: 13 de diciembre del 2023
+### Java project
+
+Datos dinamicos se guardan en la RAM
+
+**P.E (relaciones) - (MER)**
+
+El Modelo de Entidad-Relación (MER) es una representación gráfica que describe las entidades ***(objetos o conceptos)*** dentro de un sistema, sus atributos y las relaciones entre estas entidades.
+
+Los datos son estáticos, por lo que se guarda la información en el disco, también se los conoce como **datos muertos**.
+
+![imagen 17](17.png)
+
+Donde:
+
+- **Primary Key:** Identifica de manera única cada fila en una tabla y no puede tener valores duplicados ni nulos.
+
+- **Unique Key:** Asegura que los valores en un campo o conjunto de campos sean únicos para cada fila, pero puede haber múltiples claves únicas y permitir valores nulos.
+
+- **Foreign Key:** Establece relaciones entre tablas, enlazando una columna de una tabla con la clave primaria de otra, garantizando la integridad referencial.
+
+**Clusterización**
+
+En análisis de datos y aprendizaje automático, la clusterización se refiere a un proceso donde se agrupan datos similares en conjuntos llamados "clusters". El objetivo es encontrar estructuras ocultas o patrones en los datos, agrupando objetos similares en el mismo cluster y objetos diferentes en clusters separados.
+
+Existen de dos tipos:
+- **logica:** Se centra en cómo se organizan y relacionan los datos a nivel lógico dentro de una base de datos. Esto implica la estructura, diseño y relación entre las tablas y entidades.
+- **física:** Se refiere a cómo se almacenan y organizan los datos en el almacenamiento físico, como en discos duros, SSD u otros dispositivos de almacenamiento.
+
+> Se trabaja de manera más rápida y efectiva con la clasteurización física.
+
+**ID**
+
+Crear un ID para cada objeto significa asignar un identificador único a cada instancia de una clase. Este identificador único ayuda a distinguir un objeto específico de otros dentro del programa.
+
+Esto es particularmente útil cuando se trabaja con múltiples instancias de una misma clase y se necesita referenciar o realizar operaciones específicas con un objeto particular.
+
+![imagen 18](18.png)
+
+> Cuando se ocupa el id, se utilizan datos tipo ***primitivos***, los demás datos continuan siendo de tipo referencia.
+ ---
+## Clase # 16
+    Fecha: 14 de diciembre del 2023
+### Diagrama de caso de uso y diagrama de clases
+
+Paso previo al codigo. No se permiten abreviaciones en los nombres de las variables.
+
+**UML**
+
+Permite hacer gráficos, y no centrarnos en el código
+
+Hay de dos tipos:
+
+1. Estaticos
+
+- clases
+- objetos
+- componentes
+- despliegue
+
+2. Dinamicos
+
+- **casos de uso** (modelar procesos)
+- secuencia
+- colaboracion
+- estados
+- actividades
+
+**Diagramas de casos de uso**
+
+> Solo para POO 
+
+Me ayudan a representar requerimientos
+
+- **Funcionales:** les otorga el giro de negocio (registoproductos, ventas, compra)
+- **No funcionales:** tenemos que otorgarle al sistema (seguridad, encriptar)
+
+
+c.nombre = xxx ----> pone en riesgo la info
+c.setNombre() ----> tengo la posibilidad de hacer un control de la información 
+
+campo de base, solo de lectura
+
+ ---
+## Clase # 17
+    Fecha: 15 de diciembre del 2023
+### Constructor
+
+**super()**
+
+Se utiliza para llamar al constructor de la clase padre desde el constructor de la clase hija, es decir lleva los parámetros al papá.
+
+new ----> objeto, no necesariamente debemos utilizar constructores vacíos.
+
+> Virtual Machine inyecta automaticamente un constructor a las clases si es que no existe ninguno.
+
+Cuando el hijo dispara un super elimina lo que esta por defecto, y coloca el constructor creado.
+
+Si el constructor de la clase padre no tiene argumentos, **super()** se coloca implícitamente en el constructor de la clase hija, llamando al constructor sin argumentos de la clase padre.
+
+Por otra parte, si el constructor de la clase padre tiene argumentos, debes llamar explícitamente a **super()** con esos argumentos desde el constructor de la clase hija para inicializar la parte correspondiente de la clase padre.
+
+Se puede tener varios constructores.
+
+![imagen 19](19.png)
+
+**Ejecución de herencia**
+
+Primero se ejecuta el padre, luego el hijo.
+
+> Tenemos que tener en cuenta que existen diferentes espacios de memoria para cualquier objeto que creemos cada vez que colocamos ***new***.
+
+**Sobrecarga** (parametros) + **Polimorfismo** (múltiple) (forma)
+
+La ***sobrecarga*** es un concepto que permite definir múltiples métodos con el mismo nombre en una clase, pero con diferentes listas de parámetros. 
+
+Particularidad del lenguaje de poder tener el nombre, y pasarle varios parámetros: 
+
+- saltar(){}
+- saltar(int){}
+- saltar (???){}
+
+El ***polimorfismo*** permite que objetos de distintas clases sean tratados mediante una interfaz común. Esto significa que un objeto puede presentar comportamientos diferentes dependiendo del contexto en el que se utilice.
+Ambos se complementan.
+
+![imagen 20](20.png)
+
+Tienen el mismo nombre del metodo, y algunos cambios del actuar en el método.
+
+**Asociación de clases**
+
+Describe la relación y la interacción entre dos o más clases.
+
+```java
+public empresa{            
+    String nombre;       
+    Cajero c1;           
+}                        
+public class Cajero{     
+    public empresa e; 
+}
+```
+**Código en POO-JAVA**
+
+Existen: 
+
+- clases 
+- objetos
+- **encapsulamiento:** llamo a presentar un método, no nos interesa que hace solo que se ejecute.
+- **abstracción:** Definir propiedades, depende del conocimiento
+- **especificaciones:** (herencia) arriba hacia abajo
+- **generalización:** abajo hacia arriba
+- evento - mensaje
+
+ ---
+## Clase # 18
+    Fecha: 20 de diciembre del 2023
+### Class
+
+- Conceptual
+- Especificación 
+- Implementación
+
+**Herencia**
+
+***es un/una*** | ***son***
+
+Ejemplo:
+
+Un segmento es una figura.
+
+Un circulo es una figura.
+
+Quien interactua con el sistema y quien esta dentro del sistema.
+
+## Clase # 19
+    Fecha: 3 de enero del 2024
+
+### Interfaces
+
+**Atributos**
+
+- **Público:** Esta abierto para toda clase.
+- **Privado:** Solo se puede trabajar desde la misma clase.
+- **Protegido:** Público pero a nivel de paquete. 
+
+**Interfaces**
+
+Parecida a una clase pero hueca, lleva la letra "I" antes de su nombre.
+
+En una clase se puede implementar código dentro de un método, mientras que en una interfaz no.
+
+> No se pueden instanciar.
+
+Destinada a dar órdenes.
+
+Se conocen como contrato/acuerdo, realización, implementación, firmar, interfaz, suscripción.
+Permiten aplicar o definir patrones, comportamientos, muchas cosas en forma general. NO LOS IMPLEMENTA.
+
+![imagen 21](21.png)
+
+Se lo debe utilizar obligatoriamente en una clase que esté asociada. Si la interface tiene 3 métodos, la clase asociada también debe tener 3 métodos.
+
+Esto se ocupa, por ejemplo, cuando se desea conectar a aplicaciones de la nube.
+
+![imagen 22](22.png)
+
+En la interfaz todo es público ylos atributos son estáticos y constantes. 
+
+Por otro lado, una clase puede tener una o más interfaces.
+
+> No tienen ningún constructor.
+
+**Notaciones de una interface**
+
+![imagen 25](25.png)
+
+Cuando se representa con un círculo significa que no importa los métodos que se coloquen en esa interface.
+
+![imagen 26](26.png)
+
+**Se lee:** Window3 tiene un Clock3 y Clock3 implementa un Timer.
+
+![imagen 27](27.png)
+
+**Se lee:** Window1 implementa un Timer.
+
+**Clase abstracta**
+
+No permite instanciarse, pero puede implementar código y le puede heredar a la clase hija o sobreeescribir ese método con un overide. 
+
+Se diseñan para ser heredadas.
+
+**Diferencia entre clase abstracta y una interfaz**
+
+La clase abstracta tiene código base, en cambio que una interface tiene solo métodos sin código. 
+
+![imagen 23](23.png)
+
+**Relaciones entre clases**
+
+![imagen 24](24.png)
+
+## Clase # 20
+    Fecha: 5 de enero del 2024
+
+### Asociación
+
+Son relaciones entre clases en un diagrama de clases UML 
+
+![imagen 28](28.png)
+
+**Cardinalidad**
+
+Número de partipaciones que yo tengo al momento de relacionar.
+
+- 1 ---> solo uno 
+- 0..1 ---> cero a uno 
+- n ---> indica cuantas relaciones pueden haber 
+- n..m ---> varios a varios 
+- * ---> cero o más
+- 0..* ---> cero o más 
+- 1..* ---> uno o más
+
+Van debajo de una línea.
+
+Ejemplos:
+
+![imagen 29](29.png)
+
+***Se lee:*** Una persona tiene un color, un color tienen muchas personas.
+
+![imagen 30](30.png)
+
+Este ejemplo no tiene cardinalidad.
+
+***Se lee:*** Un cliente tiene una cuenta, una cuenta tiene un dueño.
+
+En código:
+
+```java
+public class Cliente {
+    private String nombre;
+    public CtaCte cuenta;
+}
+public class CtaCte {
+    private Double saldo;
+    public Cliente dueño;
+}
+```
+![imagen 31](31.png)
+
+Cuando existe una flecha, quiere decir que una clase está asociada con otra, no ambas a la vez.
+
+![imagen 32](32.png)
+
+***Se lee:*** Una persona tiene muchas mascotas de tipo perro. Un perro tiene un propietario.
+
+```java
+public class Persona {
+    private String nombre;
+    public ArrayList<Perro> mascotas = new ArrayList<>();
+}
+public class Perro {
+    private String nombre;
+    public Persona propietario;
+}
+```
+
+Como se puede tener muchas mascotas, se utiliza un ArrayList.
+
+**Relación de recursividad**
+
+![imagen 33](33.png)
+
+***Se lee:*** Una gente es querida por 1 o mucha gente. Una gente quiere a 1 o mucha gente.
+
+```java
+public class Gente {
+    public ArrayList<Gente> esQueridaPor = new ArrayList<>(Gente Gente1);
+    public ArrayList<Gente> quiereA = new ArrayList<>(Gente Gente1);
+}
+```
