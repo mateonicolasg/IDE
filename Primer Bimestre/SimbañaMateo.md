@@ -1,5 +1,9 @@
-# Notas de clase
+## <center>**Escuela Politécnica Nacional**</center>
+## <center>**Programación II - Primer Bimestre**</center>
+### **Autor:** Mateo Simbaña
 ------------
+# <center>Notas de clase</center>
+
 ## Primera clase
     Fecha: 7 de noviembre
 ### IDE VSCODE
