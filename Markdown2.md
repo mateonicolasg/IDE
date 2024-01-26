@@ -811,7 +811,7 @@ public ArrayList <Persona> getPersonaFile(){
     try{
         List<String> allLines = Files.readAllLines(Paths.get(ARCHIVO));
         for (String line : allLines){
-            String[] personaFile = linea.split(SEPARADOR);
+            String[] personaFile = line.split(SEPARADOR);
             personas.add(new Persona(   personaFile[0],
                                         personaFile[1],
                                         Integer.valueOf(personaFile[2])));
@@ -845,6 +845,387 @@ Por tanto, todas las clases deben tener un toString.
 Como toda la información está en modo texto, en modo plano se utiliza un **@Override** para poder sobreescribir a la clase y decir que salga esta información cuando se la llame.
 
 ## Clase # 26
-    Fecha: 19 de enero del 2024
+    Fecha: 23 de enero del 2024
 -------
-### <span style="color:purple">Asociación y archivos</span>
+### <span style="color:cyan">Interfaz - asociación</span>
+
+Una **interfaz** o una **herencia** se utiliza para determinar generalidades, lo que nos permite agrupar distintas cosas.
+
+Una acción especial se la puede definir a través de la interfaz, por lo general, o mediante un método por parte de la herencia.
+
+El UML proporciona varias formas de mostrar la implementación de la interfaz, como se observa a continuación:
+
+![imagen 33](33.png)
+
+***Clock1*** implementa y proporciona la interfaz ***Timer***.
+
+![imagen 34](34.png)
+
+***Window*** usa la interfaz ***Timer***, es decir requiere una interface.
+
+![imagen 35](35.png)
+
+La notación **lollipop** indica que ***Clock3*** implementa y proporciona la interfaz ***Timer***, mientras que la notación **socket** indica que ***Window3*** tiene una dependencia con la interfaz ***Timer*** cuando eso colabora con un ***Clock3***.
+
+![imagen 36](36.png)
+
+La línea de dependencia indica que ***Window2*** tiene una dependencia con la interfaz ***Timer*** cuando eso colabora con un ***Clock2***.
+
+Para relacionar un objeto que contenga una interfaz con otro objeto, también existe la cardinalidad para representar este comportamiento.
+
+Existen los siguientes tipos de relación con cardinalidad:
+
+- Bidireccional con multiplicidad 0..1 o 1
+- Direccional con multiplicidad 0..1 o 1
+- Bidireccional con multiplicidad *
+- Múltiples líneas de relación
+- Relación de recursividad
+
+> Cuando se ocupa * en las relaciones, significa que debemos utilizar listas.
+
+![imagen 37](37.png)
+
+Esta imagen quiere decir que se tiene una ***Entidad1*** que implementa una interfaz o un comportamiento y la ***Entidad2*** le dice "yo te necesito, pero necesito que hagas ciertas cosas", esto para que ambas estén en común acuerdo.
+
+Hay dos maneras para representar la implementación (interfaz) en el UML:
+
+![imagen 38](38.png)
+
+Y dos maneras para representar el objeto que tiene que utilizar esa implementación:
+
+![imagen 39](39.png)
+
+En código se vería de la siguiente forma:
+
+```java
+public class Pintor {
+    public void colorear (IColoreable objeto, Color color){
+        objeto.cambiaColor(color);
+    }
+}
+```
+
+Y en el código principal (App) tenemos lo siguiente:
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        Persona persona = new Persona();
+        Automovil automovil = new Automovil();
+        Animal animal = new Animal();
+        Color rojo = new Color();
+        Pintor pintor = new Pintor ();
+
+        pintor.colorear (persona, rojo);
+        pintor.colorear (animal, rojo);
+        pintor.colorear (automovil, rojo);
+    }
+}
+```
+
+**Herencia múltiple**
+
+Java no permite la herencia múltiple de clases directamente, y esto se debe a consideraciones de diseño y para evitar problemas asociados con la ambigüedad y la complejidad que puede surgir. 
+
+En lugar de la herencia múltiple de clases, Java utiliza una aproximación basada en ***interfaces*** para abordar algunos de los problemas asociados. Las interfaces permiten que una clase implemente múltiples interfaces, proporcionando así una forma de lograr ciertos aspectos de la herencia múltiple sin los problemas potenciales.
+
+***Ejemplo de herencia múltiple***
+
+![imagen 40](40.png)
+
+***Ejemplo de herencia múltiple en JAVA POO***
+
+![imagen 41](41.png)
+
+**Ejemplo**
+
+Se requiere crear un programador full stack, que sepa base de datos, programación orientada a objetos, programación estructurada e interfaces gráficas.
+
+***Use Case***
+
+![imagen 42](42.png)
+
+***Diagrama de clases***
+
+![imagen 43](43.png)
+
+***En código***
+
+Desde App:
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        DevFullStack dev = new DevFullStack("Mateo","Simbana",19);
+        ExpertoUIUX eUIUX = new ExpertoUIUX();
+        ExpertoBaseDato eBD = new ExpertoBaseDato();
+        ExpertoProgramacionEstructurada ePE = new ExpertoProgramacionEstructurada();
+        ExpertoProgramacionOrientadaObjeto ePOO = new ExpertoProgramacionOrientadaObjeto();
+
+        ePOO.ensenar(dev);
+        ePE.ensenar(dev);
+        eBD.ensenar(dev);
+        eUIUX.ensenar(dev);
+    }
+}
+```
+
+## Clase # 27
+    Fecha: 24 de enero del 2024
+-------
+### <span style="color:brown">Práctica</span>
+
+Interfaces es lo que yo voy a pasar de un lado a otro para no generar errores en los programas y que el código se vea más simple.
+
+Continuando con el ejercicio anterior, se solicita guardar una marca para saber lo que ha aprendido Developer Full Stack.
+
+Para ello tenemos 4 métodos diferentes:
+
+1. **Primer escenario**
+
+```java
+public class DevFullStack extends Persona implements IAlumnoProgramacionEstructurada, IAlumnoProgramacionOrientadaObjeto, IAlumnoUIUX, IAlumnoBaseDato {
+
+    private String conocimientoAdquirido;
+
+    public DevFullStack(String nombre, String apellido, int edad) {
+        super(nombre, apellido, edad);
+        conocimientoAdquirido = "";
+    }
+
+    @Override
+    public String aprenderDisenoUIUX() {
+        conocimientoAdquirido += "Diseno UIUX";
+        return "Aprendiendo Diseno UIUX";
+    }
+
+    @Override
+    public String aprenderDisenoProgramacionOrientadaObjeto() {
+        conocimientoAdquirido += "Diseno Programacion Orientada Objeto";
+        return "Aprendiendo Diseno Programacion Orientada Objeto";
+    }
+
+    @Override
+    public String aprenderDisenoProgramacionEstructurada() {
+        conocimientoAdquirido += "Diseno Programacion Estructurada";
+        return "Aprendiendo Diseno Programacion Estructurada";
+    }
+
+    @Override
+    public String aprenderDisenoBaseDato() {
+        conocimientoAdquirido += "Diseno Base Dato";
+        return "Aprendiendo Diseno Base Dato";
+    }
+
+    public void aprendi(){
+        System.out.println("El desarrollador ha aprendido");
+        System.out.println(conocimientoAdquirido);
+    }
+}
+```
+Esta no es una manera óptima de resolver el problema puesto que solamente tiene que aparecer una vez la materia que ya aprendió el Developer.
+
+> El constructor está diseñado para inicializar las propiedades o atributos de una clase u otorgarles un valor inicial, de modo que podamos controlar errores que se presenten en la ejecución del programa.
+
+2. **Segundo escenario**
+
+Presenta un código más elegante, sin embargo, sigue teniendo el mismo problema del primer caso.
+
+```java
+public class DevFullStack extends Persona implements IAlumnoProgramacionEstructurada, IAlumnoProgramacionOrientadaObjeto, IAlumnoUIUX, IAlumnoBaseDato {
+
+    private ArrayList<String> conocimientos;
+
+    public DevFullStack(String nombre, String apellido, int edad) {
+        super(nombre, apellido, edad);
+        conocimientos = new ArrayList<>();
+    }
+
+    @Override
+    public String aprenderDisenoUIUX() {
+        conocimientos.add("Diseno UIUX");
+        return "Aprendiendo Diseno UIUX";
+    }
+
+    @Override
+    public String aprenderDisenoProgramacionOrientadaObjeto() {
+        conocimientos.add("Diseno Programacion Orientada Objeto, ");
+        return "Aprendiendo Diseno Programacion Orientada Objeto";
+    }
+
+    @Override
+    public String aprenderDisenoProgramacionEstructurada() {
+        conocimientos.add("Diseno Programacion Estructurada, ");
+        return "Aprendiendo Diseno Programacion Estructurada";
+    }
+
+    @Override
+    public String aprenderDisenoBaseDato() {
+        conocimientos.add("Diseno Base Dato, ");
+        return "Aprendiendo Diseno Base Dato";
+    }
+
+    public void aprendi(){
+        System.out.println("El desarrollador ha aprendido");
+        for (String conocimiento : conocimientos) {
+            System.out.print(conocimiento);
+        }
+    }
+}
+```
+
+3. **Tercer Escenario**
+
+```java
+public class DevFullStack extends Persona implements IAlumnoProgramacionEstructurada, IAlumnoProgramacionOrientadaObjeto, IAlumnoUIUX, IAlumnoBaseDato {
+
+    private ArrayList<String> conocimientos;
+
+    public DevFullStack(String nombre, String apellido, int edad) {
+        super(nombre, apellido, edad);
+        conocimientos = new ArrayList<>();
+    }
+
+    @Override
+    public String aprenderDisenoUIUX() {
+        agregarAprendizaje("Diseno UIUX");
+        return "Aprendiendo Diseno UIUX";
+    }
+
+    @Override
+    public String aprenderDisenoProgramacionOrientadaObjeto() {
+        agregarAprendizaje("Diseno Programacion Orientada Objeto");
+        return "Aprendiendo Diseno Programacion Orientada Objeto";
+    }
+
+    @Override
+    public String aprenderDisenoProgramacionEstructurada() {
+        agregarAprendizaje("Diseno Programacion Estructurada");
+        return "Aprendiendo Diseno Programacion Estructurada";
+    }
+
+    @Override
+    public String aprenderDisenoBaseDato() {
+        agregarAprendizaje("Diseno Base de Dato");
+        return "Aprendiendo Diseno Base Dato";
+    }
+
+    public void aprendi(){
+        System.out.println("El desarrollador ha aprendido");
+        for (String conocimiento : conocimientos) {
+            System.out.print(conocimiento + ", ");
+        }
+    }
+
+    private void agregarAprendizaje(String conocimiento){
+        boolean bandera = false;
+        for (String c : conocimientos) {
+            if (c.equals(conocimiento)){
+                bandera = true;
+            }
+        }
+        if (!bandera)
+            conocimientos.add(conocimiento);
+    }
+}
+```
+
+Puede ser útil ocupar un método para una lista pequeña, ya que el programa no va a demorar tanto en reconocer si el Developer ya adquirió el conocimiento de cierta materia y no se está repitiendo. No obstante, para una lista extensa no es eficiente solventar el problema de esta manera debido a la cantidad de líneas que debe recorrer el método para identificar que no exista ninguna repetición de la materia aprendida. 
+
+Una técnica que permita hacer esto de forma más rápida y efectiva es utilizando un ***break*** o por medio de un ***HashTable*** o ***HashMap***.
+
+**HashTable y HashMap**
+
+Estos términos se refieren a estructuras de datos que permiten almacenar y recuperar elementos utilizando una clave. Aunque ambos tienen funcionalidades similares, existen algunas diferencias entre ellos.
+
+Ambos tienen un key y un value. Esto significa que yo puedo definir una marca y un valor a esa marca. Además, evita que una marca sea reemplazada si ya está cargada, por lo que nos ayuda a proteger información.
+
+***HashTable***
+
+- **Sincronización:** A diferencia de HashMap, HashTable es sincronizado. Esto significa que es seguro para operaciones en entornos multi-hilo, pero también puede tener un rendimiento inferior en comparación con HashMap en situaciones donde la sincronización no es necesaria.
+
+- **Nulls:** Tanto las claves como los valores en un HashTable no pueden ser nulos. Intentar agregar o recuperar valores nulos resultará en una excepción NullPointerException.
+
+- **Herencia de la clase Dictionary:** HashTable es una subclase de la clase más antigua Dictionary.
+
+***HashMap***
+
+- **No Sincronizado:** A diferencia de HashTable, HashMap no es sincronizado por defecto. Esto significa que, en general, es más eficiente en situaciones donde la sincronización no es un problema. Sin embargo, si se requiere sincronización, se puede lograr mediante la utilización de Collections.synchronizedMap().
+
+- **Permite Nulos:** A diferencia de HashTable, HashMap permite claves y valores nulos. Se pueden tener claves y valores nulos en un HashMap.
+
+> **HashTable** como hace una validación para que no se repita la información es más lento, mientras que **HashMap** también valida pero como nos permite ingresar nulos puede tener alguna ventaja.
+
+4. **Escenario ideal**
+
+```java
+public class DevFullStack extends Persona implements IAlumnoProgramacionEstructurada, IAlumnoProgramacionOrientadaObjeto, IAlumnoUIUX, IAlumnoBaseDato {
+
+    Hashtable<Integer, String> aprendizajes;
+
+    public DevFullStack(String nombre, String apellido, int edad) {
+        super(nombre, apellido, edad);
+        aprendizajes = new Hashtable<>();
+    }
+
+    @Override
+    public String aprenderDisenoUIUX() {
+        aprendizajes.put(1,"Diseno UIUX");
+        return "Aprendiendo Diseno UIUX";
+    }
+
+    @Override
+    public String aprenderDisenoProgramacionOrientadaObjeto() {
+        aprendizajes.put(2,"Diseno Programacion Orientada Objeto");
+        return "Aprendiendo Diseno Programacion Orientada Objeto";
+    }
+
+    @Override
+    public String aprenderDisenoProgramacionEstructurada() {
+        aprendizajes.put(3,"Diseno Programacion Estructurada");
+        return "Aprendiendo Diseno Programacion Estructurada";
+    }
+
+    @Override
+    public String aprenderDisenoBaseDato() {
+        aprendizajes.put(4,"Programacion Base Dato");
+        return "Aprendiendo Diseno Base Dato";
+    }
+    // Programación Lambda
+    public void aprendi(){
+        System.out.println("El desarrollador ha aprendido");
+        aprendizajes.forEach((k,v)->{
+            System.out.print(v + ", ");
+        });
+    }
+}
+```
+
+Como un HasTable guarda dos valores a la vez no se puede ocupar un ***foreach*** debido a que este solo puede presentar un valor en cada corrida, no dos. Por tal motivo, utilizamos **programación lambda**.
+
+**Programación Lambda**
+
+Es una forma de programación rápida, la cual permite un código más conciso y expresivo.
+
+Java ha sido un lenguaje que siempre daba las iniciativas en normativas o formas de ver nuevas estructuras para programar, por ejemplo las listas, que son un ***generic***.
+
+Un ***generic*** facilita tener una lista de cualquier cosa T (String, Integer, Objeto). Luego C# y otros lenguajes de programación fueron implementando el tema de generic.
+
+Después de un tiempo, apareció otro modo para acortar la programación a través de la programación lambda. Esta fue implementada directamente por C# y en las últimas versiones de Java ya la pusieron en funcionamiento.
+
+## Clase # 28
+    Fecha: 26 de enero del 2024
+-------
+### <span style="color:grey"></span>
+
+
+
+## Clase # 29
+    Fecha:  de enero del 2024
+-------
+### <span style="color:purple"></span>
+
+## Clase # 30
+    Fecha:  de enero del 2024
+-------
+### <span style="color:purple"></span>
