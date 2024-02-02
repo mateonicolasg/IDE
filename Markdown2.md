@@ -1214,9 +1214,49 @@ Un ***generic*** facilita tener una lista de cualquier cosa T (String, Integer, 
 Después de un tiempo, apareció otro modo para acortar la programación a través de la programación lambda. Esta fue implementada directamente por C# y en las últimas versiones de Java ya la pusieron en funcionamiento.
 
 ## Clase # 28
-    Fecha: 26 de enero del 2024
+    Fecha: 30 de enero del 2024
 -------
-### <span style="color:grey"></span>
+### <span style="color:grey">Revisión prueba</span>
+
+Cada vez que creo un objeto, se crean memorias separadas.
+
+```java
+public class IABOT {
+    private String nombre;
+    
+    public IABOT(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+}
+```
+
+Hay tres espacios de memoria diferente para cada vez que cree un objeto.
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        IABOT ia1 = new IABOT("Pepe");
+        IABOT ia2 = new IABOT("Juan");
+        IABOT ia3 = new IABOT("Ana");
+        System.out.println(ia1.getNombre());
+        System.out.println(ia2.getNombre());
+        System.out.println(ia3.getNombre());
+    }
+}
+```
+
+Constructor privado
+
+**Package**
+
 
 
 
