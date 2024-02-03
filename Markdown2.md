@@ -1218,6 +1218,14 @@ Después de un tiempo, apareció otro modo para acortar la programación a trav�
 -------
 ### <span style="color:grey">Revisión prueba</span>
 
+***Prototipado Exobot***
+
+![imagen 48](48.png)
+
+**Package**
+
+Un "package" (paquete) es una forma de organizar y estructurar clases e interfaces relacionadas en un conjunto lógico. Los paquetes proporcionan un mecanismo para encapsular clases, interfaces, enumeraciones y subpaquetes, lo que ayuda a evitar conflictos de nombres y facilita la gestión y mantenimiento del código.
+
 Cada vez que creo un objeto, se crean memorias separadas.
 
 ```java
@@ -1238,7 +1246,7 @@ public class IABOT {
 }
 ```
 
-Hay tres espacios de memoria diferente para cada vez que cree un objeto.
+En el siguiente ejemplo, hay tres espacios de memoria diferentes, uno para cada objeto creado.
 
 ```java
 public class App {
@@ -1253,19 +1261,641 @@ public class App {
 }
 ```
 
-Constructor privado
+Para que se cree un objeto una sola vez se utiliza un constructor privado.
 
-**Package**
+Si es que existe nulo la primera vez, se crea el espacio de memoria; las siguientes veces devuelve lo que ya se tiene creado en memoria.
 
+```java
+public class IABOT {
+    private static String nombre;
+    private static IABOT instancia;
 
+    // Constructor privado
+    private IABOT(){}
 
+    public static IABOT getInstancia(String nombre){
+        if (instancia == null){
+            instancia = new IABOT();
+            IABOT.nombre = nombre;
+        }
+        return instancia;
+    }
+```
+> ***this.nombre*** se usa cuando nos referirnos a espacios dinámicos de memoria. Como en el ejercicio se necesita de un espacio común, se utilizan propiedades estáticas.
+
+Para congelar el espacio de memoria se utiliza ***static***, es decir que el objeto solo se va a crear una sola vez y nadie podrá modificarlo.
+
+Los getter y setter para propiedades estáticas también son estáticos.
+
+> La ***interface*** obliga a que todo sea estático.
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        IABOT ia1 = IABOT.getInstancia("Pepe");
+        IABOT ia2 = IABOT.getInstancia("Ana"); 
+        IABOT ia3 = IABOT.getInstancia("Juan"); 
+
+        System.out.println(ia1.getNombre());
+        System.out.println(ia2.getNombre());
+        System.out.println(ia3.getNombre());
+    }
+}
+```
+
+Los ***espacios de memoria estáticos*** y ***espacios de memoria dinámicos*** son conceptos que se refieren a cómo se asigna y gestiona la memoria en un programa. 
+
+**Espacios de memoria dinámicos**
+
+Se refieren a áreas de memoria que se asignan y liberan en tiempo de ejecución según sea necesario. La memoria dinámica se gestiona a través de funciones o constructores específicos para la asignación y liberación de memoria.
+
+**Espacios de memoria estáticos**
+
+Se refieren a áreas de memoria que se asignan en tiempo de compilación y tienen un tamaño fijo durante la ejecución del programa. La memoria estática suele utilizarse para almacenar variables globales, variables estáticas y constantes.
+
+![imagen 44](44.png)
+
+Para que cualquier variable de un mismo tipo se enganche a un mismo espacio de memoria, se emplea el patrón de diseño ***Singleton***.
+
+***Patrón Singleton***
+
+Es un patrón de diseño creacional que se utiliza para garantizar que una clase tenga una sola instancia y proporciona un punto de acceso global a esa instancia. Este patrón es útil cuando se desea controlar estrictamente la creación de instancias de una clase y asegurarse de que solo exista una única instancia en todo el programa. 
+
+Como se requieren crear Exobots a partir de un IABOT, se utiliza la ***herencia***.
+
+![imagen 45](45.png)
+
+Cuando se quiere construir el espacio h1, resulta que es hijo de P, por lo tanto debe construir a P. En otras palabras, cada que se quiera construir otro objeto de tipo H, este va a tratar de construir otro espacio de memoria para sí mismo y para su papá.
+
+En código, esto se demuestra de la siguiente manera:
+
+```java
+public class Padre {
+    private String nombre;
+
+    public Padre(String nombre){
+        this.nombre = nombre;
+    }
+
+    public String getNombre(){
+        return nombre;
+    }
+
+    public void setNombre(String nombre){
+        this.nombre = nombre;
+    }
+}
+
+public class Hijo extends Padre {
+    public Hijo(String nombre){
+        super(nombre);
+    }
+}
+```
+
+Donde cada hijo tiene un padre diferente:
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        Hijo h1 = new Hijo ("Pepe");
+        Hijo h2 = new Hijo ("Juan");
+        Hijo h3 = new Hijo ("Mario");
+
+        System.out.println(h1.getNombre());
+        System.out.println(h2.getNombre());
+        System.out.println(h3.getNombre());
+    }
+}
+```
+
+Para el diseño del ejercicio, esto se debe ver de la siguiente manera.
+
+![imagen 46](46.png)
+
+Ejemplificando en un diagrama de clases, se vería de la siguiente forma:
+
+![imagen 47](47.png)
+
+Se utiliza protected (# o ~), lo que significa que ese método solo está visible para el proceso de herencia, cumpliendo que no se pueda colocar un ***new*** como paramámetro pero que siempre se permita crear nuevos Exobot.
+
+Si se envía como parámetro un nulo (el Exoesqueleto sin Padre) debe quebrarse el código e impedir que se pueda realizar eso mediante un if.
+
+A continuación, se presenta el ejemplo en código de este caso:
+
+```java
+public class IABOT {
+    private IABOT(){}
+
+    protected IABOT(IABOT ia) {
+        if(ia != null)
+            instancia = ia; 
+    }
+}
+
+public class Exobot extends IABOT{
+    public Exobot (IABOT ia){
+        super(ia);
+    }
+}
+```
+
+```java
+public static void main(String[] args) throws Exception {        
+    IABOT ia1 = IABOT.getInstancia("Pepe");
+    IABOT ia2 = IABOT.getInstancia("Ana"); 
+    IABOT ia3 = IABOT.getInstancia("Juan"); 
+
+    Exobot e1 = new Exobot(ia1);
+    Exobot e2 = new Exobot(ia2);
+    Exobot e3 = new Exobot(ia3);
+
+    System.out.println(e1.getNombre());
+    System.out.println(e2.getNombre());
+    System.out.println(e3.getNombre());
+}
+}
+```
+
+Para la resolución del ejercicio todavía no está resuelto correctamente esta parte, puesto que se puede crear un Exobot con un Padre que apunte a otro espacio de memoria que no sea la de IABOT, de la siguiente manera:
+
+```java
+public static void main(String[] args) throws Exception {        
+    IABOT ia1 = IABOT.getInstancia("Pepe");
+    IABOT ia2 = IABOT.getInstancia("Ana"); 
+    IABOT ia3 = IABOT.getInstancia("Juan"); 
+
+    Exobot e1 = new Exobot(ia1);
+    Exobot e2 = new Exobot(ia2);
+    Exobot e3 = new Exobot(IABOT.getInstancia("tu mami Ucrania"));
+
+    System.out.println(e1.getNombre());
+    System.out.println(e2.getNombre());
+    System.out.println(e3.getNombre());
+}
+```
 
 ## Clase # 29
-    Fecha:  de enero del 2024
+    Fecha: 31 de enero del 2024
 -------
-### <span style="color:purple"></span>
+### <span style="color:purple">Revisión prueba - parte 2</span>
+
+Una condición del problema es que el Exobot tenga extremidades al igual que el humano (brazos, piernas, tronco y cabeza).
+
+Para garantizar que tengan esas estructuras y que luego puedan hacer un match con un soldado, vamos a utilizar una interfaz.
+
+> Las ***interfaces*** están diseñadas para generar comportamientos, más no estructuras. Sin embargo, las actualizaciones permiten que las interfaces tengan atributos, los cuales son estáticos (obligatorios) y constantes.
+
+Validamos que tenga todas las partes del cuerpo a partir del siguiente código:
+
+```java
+public interface IHumanoExtremidad {
+    public Boolean brazoIzquierdo   = true; 
+    public Boolean brazoDerecho     = true;
+    public Boolean piernaIzquierda  = true;
+    public Boolean piernaDerecha    = true;
+    public Boolean cabeza           = true;
+    public Boolean tronco           = true;
+}
+```
+
+En este caso, la clase Soldado implementa esta interface, lo mismo se debe hacer con Exobot.
+
+```java
+public class Soldado extends Humano implements IHumanoExtremidad {
+
+    public Soldado(String nombre) {
+        super(nombre);
+
+        if (Soldado.brazoDerecho)
+            System.out.println("Brazo derecho");
+            
+        if (Soldado.brazoIzquierdo)
+            System.out.println("Brazo izquierdo");
+        
+        if (Soldado.piernaDerecha)
+            System.out.println("Pierna derecha");
+        
+        if (Soldado.piernaIzquierda)
+            System.out.println("Pierna izquierda");
+        
+        if (Soldado.cabeza)
+            System.out.println("Cabeza");
+        
+        if (Soldado.tronco)
+            System.out.println("Tronco");
+    }
+    
+}
+```
+
+Para observar su funcionamiento realizamos un testing en App.
+
+No es recomendable crear estas partes del cuerpo mediante variables para cada clase puesto que nadie puede garantizar que en realidad el objeto las posea.
+
+Por otra parte, existen expertos en inglés y español, un mecatrónico, soldados; por ello creamos una clase Humano, de manera que hereden alguna cosa en común (como el nombre).
+
+![imagen 49](49.png)
+
+De igual manera, el problema menciona que en cada brazo podemos colocarle un arma al Exobot, en la mano izquieda una metralleta o una bazuca y en la mano izquierda un lanza fuegos o un láser, donde cada uno puede cargar una o ningún arma en cada brazo dependiendo de las habilidades que posea el Soldado.
+
+El soldado va a adquirir alguna habilidad dependiendo de su suerte (lo que le dé Diosito al momento de crearse) a través de un algoritmo random.
+
+```java
+private boolean getHabilidadRandom(){
+    int bias = 50;
+    return (Math.random() * 100 < bias);
+}
+```
+
+Este random genera números entre 0 y 1, donde existe un 50%  de que devuelva true o false. 
+
+Registramos las habilidades del Soldado dentro del constructor.
+
+```java
+public Soldado(String nombre) {
+    super(nombre);
+
+    if (Soldado.brazoDerecho){
+        setHabilidadBrazoDerecho(getHabilidadRandom());
+        System.out.println("Brazo derecho: " + getHabilidadBrazoDerecho());
+    }
+        
+    if (Soldado.brazoIzquierdo){
+        setHabilidadBrazoIzquierdo(getHabilidadRandom());
+        System.out.println("Brazo derecho: " + getHabilidadBrazoIzquierdo());
+    }
+    if (Soldado.piernaDerecha)
+        System.out.println("Pierna derecha");
+    
+    if (Soldado.piernaIzquierda)
+        System.out.println("Pierna izquierda");
+    
+    if (Soldado.cabeza)
+        System.out.println("Cabeza");
+    
+    if (Soldado.tronco)
+        System.out.println("Tronco");
+}
+
+public Boolean getHabilidadBrazoIzquierdo() {
+    return habilidadBrazoIzquierdo;
+}
+```
+
+> Si el constructor tiene restricciones (parámetros) y no existen getter y setter para cada atributo, entonces debemos colocar estos cambios obligatoriamente dentro del diagrama de clases.
+
+Además, el Exobot tiene la habilidad de aprender inglés y español, IABOT no le transmite estos conocimientos, solo le transmite la habilidad de que él pueda aprender estos idiomas. Por lo que Exobot tiene que escuchar a los expertos y de esta manera, el traje puede traducir estos idiomas y dar a entender al Soldado ruso lo que le quieren decir otras personas. 
+
+En otras palabras, como esa habilidad se adquiere bajo un entrenamiento van a venir técnicos de inglés y español, le van a hablar al Exabot y el tiene una interfaz de aprendizaje.
+
+Volviendo con el Exobot, primero debe tener una matriz para crearse. Segundo, solo puede integrar un arma en cada brazo, si utilizamos un set para cada arma existiría un problema puesto que el Exobot podría quedarse sin armas o podrían obligarle a tener dos armas en un solo brazo, que le es imposible. 
+
+Para resolver esto, vamos a hacer uso de la generalización. Como a la final debemos ponerle un arma al brazo puedo crear un método sobrecargado que se llame setArma y le pase la metralleta o la bazuca, pero da el mismo problema que se mencionó anteriormente, lo ideal es que exista un solo método que se llame setArma con un parámetro que reciba cualquiera de las dos armas. Para hacer esto sin sobrecarga utilizamos una interfaz o una clase abstracta.
+
+![imagen 50](50.png)
+
+En este caso, se usará una clase abstracta para las armas del brazo izquierdo:
+
+```java
+public abstract class ArmaIzquierda {
+    private String tipo;
+
+    public ArmaIzquierda(String tipo){
+        this.tipo = tipo;
+        System.out.println(tipo);
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void disparar(int cantidadBalas){
+        for (int i = 0; i < cantidadBalas; i++) {
+            System.out.println(" * ");
+        }
+    }
+}
+```
+
+Para que no exista un problema semántico y que cuando otra persona quiera modificar el código entienda lo que está pasando, es recomendable nombrar las clases por secciones, es decir utilizar prefijos para agruparlas, por ejemplo ArmaBazuca y ArmaMetralleta heredan de ArmaIzquierda.
+
+```java
+public class ArmaBazuca extends ArmaIzquierda{
+
+    public ArmaBazuca(String tipo) {
+        super(tipo);
+    }
+    
+}
+
+public class ArmaMetralleta extends ArmaIzquierda {
+
+    public ArmaMetralleta(String tipo) {
+        super(tipo);
+    }
+    
+}
+```
 
 ## Clase # 30
-    Fecha:  de enero del 2024
+    Fecha: 1 de febrero del 2024
 -------
-### <span style="color:purple"></span>
+### <span style="color:green">Revisión prueba - parte 3</span>
+
+> Sin necesidad de crear un paquete, con gramática también puedo agrupar clases.
+
+Para que funcione el **o** se necesita de una clase abstracta o una interfaz, la cual se convierte en un **bypass** o un filtro para luego ingresar a otras clases.
+
+```java
+public class BrazoIzquierdo {
+
+    private ArmaIzquierda arma;
+
+    public void setArma(ArmaIzquierda arma){
+        this.arma = arma;
+    }
+}
+```
+De esta manera garantizamos que el brazo izquierdo solo tenga un arma izquierda y no una mezcla de armas izquierdas o derechas.
+
+> Si en el digrama de clases solo se coloca el tipo de variable, quiere decir que podemos ponerle cualquier nombre a esa variable.
+
+Para validar esto, nos dirigimos a Exobot.
+
+Primero verificamos que está activo su brazo izquierdo, como implementa las extremidades del Humano ya lo tiene; luego vamos a realizar un código que indique lo que puede hacer con este brazo:
+
+```java
+public class Exobot extends IABOT implements IHumanoExtremidad{
+
+    private FuentePoder eFuentePoder;
+    private TurboReactor eTurboReactor;
+    private BrazoDerecho eBrazoDerecho;
+    private BrazoIzquierdo eBrazoIzquierdo;
+    private Pierna ePiernaDerecha;
+    private Pierna ePiernaIzquierda;
+
+    public Exobot (IABOT iaBot){
+        super(iaBot);
+        eTurboReactor = new TurboReactor();
+        eBrazoDerecho = new BrazoDerecho();
+        ePiernaDerecha = new Pierna();
+        ePiernaIzquierda = new Pierna();
+
+        if(Exobot.brazoDerecho)
+            System.out.println("Brazo derecho");
+        if(Exobot.brazoIzquierdo){
+            eBrazoIzquierdo = new  BrazoIzquierdo();
+            boolean soldadoHabilidadBrazoIzquierdo = false;
+
+            if(soldadoHabilidadBrazoIzquierdo)
+                eBrazoIzquierdo.setArma(new ArmaMetralleta("Metralleta MK61"));
+            else
+                eBrazoIzquierdo.setArma(new ArmaBazuca("Bazuca Antitanque"));
+        }
+
+    }
+}
+
+```
+
+También podemos mandar a disparar el arma según la cantidad de balas que tenga mediante la siguiente línea de código:
+
+```java
+eBrazoIzquierdo.getArma().disparar(30);
+```
+
+Si en algún momento yo quiero saber que arma se colocó en el brazo izquierdo, empleamos el método ***toString*** puesto que todos los objetos creados podrían ir a parar a un toString.
+
+Cada vez que creamos un objeto, Java le da como un identificado único para que él al interno no se confunda y no los vaya a sobreescribir o a pisar un objeto con otro objeto, por tal motivo aparecen números extraños cuando se llama al toString que se tenía por defecto.
+
+> Si no se coloca un método toString dentro de la clase, por defecto  el compilador java genera uno para nosotros.
+
+Para que sea más expresivo este método se realiza un ***override***.
+
+```java
+public abstract class ArmaIzquierda {
+    @Override
+    public String toString(){
+        return  "Esto es una "
+                +this.getClass().getName()+" de tipo: "
+                +this.getTipo();
+    }
+}
+
+```
+
+> El **toString** se utiliza generalmente para realizar cualquier tipo de Testing.
+
+Cada vez que creamos una variable apunta a algo, eso significa que en algún momento a través de la variable podemos ingresar a la información que estamos apuntando.
+
+```java
+eBrazoIzquierdo.setArma(new ArmaMetralleta("Metralleta MK61"));
+
+eBrazoIzquierdo.setArma(new ArmaBazuca("Bazuca Antitanque"));
+```
+
+Con estas líneas podemos perder las referencias, es decir que le damos el arma al Exobot porque no me interesa después saber por el arma. En consecuencia, si en algún momento se necesita saber el estado del arma no hay forma de acceder a ella puesto que no existe una variable de acceso.
+
+Entonces al realizarlo de esa manera, nos ahorramos líneas de código pero si a futuro se necesita acceder a esas referencias debemos analizar donde quedaron contenidas, lo que puede resultar muy complicado algunas veces; en este caso el arma queda contenida dentro del brazo izquierdo, por lo que de alguna forma la puedo recuperar.
+
+**Beneficio de la clase abstracta**
+
+La clase abstracta me permite hacer generalizaciones, es decir que puedo crear un arma tipo ArmaIzquierda (la cual es abstracta) mediante clases que la heredan (ArmaMetralleta y ArmaBazuca).  
+
+```java
+ArmaIzquierda m = new ArmaMetralleta("Metralleta");
+ArmaIzquierda  b = new ArmaBazuca("Bazuca");
+eBrazoIzquierdo.setArma(m);
+eBrazoIzquierdo.setArma(b);
+```
+
+Esto se realizó de manera más abstracta en el constructor del Exobot. El mecanismo aplicado es el más óptimo, ya que es recomendable no crear variables u objetos que no vamos a utilizar, evitando un gasto de memoria innecesario.
+
+> Cuando se tiene una buena estructura del programa, si se requiere hacer algún cambio a futuro no habrá dificultad e inclusive nos ahorraremos tiempo.
+
+- **Sonar:** Es una herramienta a la cual podemos pasarle un código y esta detecta duplicados, errores en el estilo del código, entre otras cosas.
+
+- **Profile:** Es una configuración que se le puede poner a VS Code para validar que el código esté limpio y cumpla con todos los requerimientos.
+
+> Documentar es una buena práctica de programación, comentar el código no lo es, al menos que sea necesario para una parte que sea compleja de entender.
+
+```java
+/*
+ * <b> Exabot </b> exoesqueleto cyberbot
+ * @param iaBot
+*/
+public Exobot (IABOT iaBot){}
+```
+
+Ahora nos enfocamos en el Mecatronico, el cual es el encargado de tomar un Soldado, un exoesqueleto y ensamblar al Exobot con supervisión de la IABOT. El código se muestra a continuación:
+
+```java
+public class Mecatronico extends Humano {
+
+    public Mecatronico(String nombre) {
+        super(nombre);
+    }
+
+    public void ensamblar(Soldado soldado, Exobot exobot, IABOT iaBot){
+        System.out.println(soldado.getHabilidadBrazoIzquierdo());
+
+        exobot.unirseSoldado(soldado);
+    }
+}
+```
+
+Como el exoesqueleto se une con el Soldado durante el ensamblado del Exobot, se añade el siguiente método a la clase Exobot:
+
+```java
+public void unirseSoldado(Soldado soldado) {
+    if(Exobot.brazoIzquierdo && eBrazoIzquierdo != null){
+        if(soldado.getHabilidadBrazoIzquierdo())
+            eBrazoIzquierdo.setArma(new ArmaMetralleta("Metralleta MK61"));
+        else
+            eBrazoIzquierdo.setArma(new ArmaBazuca("Bazuca antitanque"));
+        
+        eBrazoIzquierdo.getArma().disparar(30);
+        System.out.println(eBrazoIzquierdo.getArma().toString());
+    }
+}
+```
+
+Finalmente creamos Whiterum, quien es el orquestador del programa (presenta todo el escenario planteado). Como no tiene relaciones con otras clases, no debemos tener atributos en esa clase, solamente creamos variables dentro de sus métodos.
+
+```java
+public class Whiterun {
+    public void iniciar() {
+        IABOT iaBot = IABOT.getInstancia("IA-RUSA");
+        Mecatronico mecatronico = new Mecatronico("Mecatronico");
+        Soldado s1 = new Soldado("Juan");
+        Exobot e1 = new Exobot(iaBot);
+
+        mecatronico.ensamblar(s1, e1, iaBot);
+    }
+}
+```
+
+## Clase # 31
+    Fecha: 2 de febrero del 2024
+-------
+### <span style="color:orange">Introducción a Base de Datos</span>
+
+**Persistencia**
+
+Permite el almacenamiento de la información, guardar la data.
+
+**Modelado Entidad Relación (MER)**
+
+Es un enfoque para diseñar bases de datos relacionales de manera visual. Fue propuesto por Peter Chen en la década de 1970 y se ha convertido en una herramienta estándar en el diseño de bases de datos. El modelo MER utiliza conceptos como entidades, atributos y relaciones para representar la estructura lógica de la base de datos.
+
+![imagen 51](51.png)
+
+**Reglas para ejecutar el CRUD - "Normalizar"** 
+
+CRUD es un acrónimo que representa las operaciones básicas realizadas en la gestión de datos en un sistema de base de datos o en cualquier tipo de almacenamiento de información. Cada letra en "CRUD" corresponde a una de estas operaciones:
+
+- **Crear (Create):** La operación de "Crear" implica la creación de nuevos registros o elementos en la base de datos. En el contexto de una aplicación, esto podría significar agregar nuevos datos a una tabla o crear nuevos registros en un sistema.
+
+- **Leer (Read):** La operación de "Leer" implica la recuperación de información existente de la base de datos. Esto se logra mediante consultas que permiten seleccionar y mostrar datos almacenados en el sistema.
+
+- **Actualizar (Update):** La operación de "Actualizar" implica la modificación de registros existentes en la base de datos. Los datos existentes se pueden modificar o actualizar según sea necesario.
+
+- **Eliminar (Delete):** La operación de "Eliminar" implica la eliminación de registros o datos existentes en la base de datos. Los registros seleccionados se eliminan de manera permanente o se marcan como inactivos, dependiendo de la implementación específica.
+
+1. ***Relación 1 a 1 o 1...1***
+
+"Divide y vencerás"
+
+Se requiere de un **Pk**.
+
+**Primary key (Pk)**
+
+La "primary key" (clave primaria) en una base de datos es un concepto importante que se refiere a un campo o conjunto de campos en una tabla que sirve para identificar de manera única cada registro en esa tabla. 
+
+> Lo más recomendable es que para cada tabla se cree un ***id***, de modo que no pueda repetirse este Pk y que si una persona se equivoca registrando sus datos no exista ningún inconveniente después.
+
+Para ejemplificar este caso se utiliza a una persona:
+
+![imagen 52](52.png)
+
+![imagen 53](53.png)
+
+- **Diagrama relacional:**
+
+![imagen 58](58.png)
+
+**Principio atómico**
+
+Significa que cuando realizas varias acciones (como agregar, actualizar o eliminar datos), todas esas acciones deben ocurrir completamente o ninguna de ellas. No puede haber una situación a medias. Este principio asegura que la base de datos permanezca en un estado consistente incluso si ocurre algún problema, ya que todas las operaciones de una transacción se deshacen si algo sale mal. Es como si todas las acciones se consideraran "todo o nada". Esto ayuda a mantener la integridad de los datos en la base de datos.
+
+2. ***Relación 1 a muchos o 1...****
+
+Se requiere de un **Pk** y un **Fk**.
+
+**Foreign Key (Fk)**
+
+Una "foreign key" (clave foránea o clave externa) en una base de datos relacional es un campo o conjunto de campos en una tabla que establece una relación entre dos tablas. La clave foránea se utiliza para vincular los datos de una tabla (tabla hija o secundaria) con los datos de otra tabla (tabla principal o padre) mediante la referencia a la clave primaria de la tabla principal.
+
+> Los ***Fk*** pueden repetirse.
+
+![imagen 54](54.png)
+
+![imagen 55](55.png)
+
+- **Diagrama relacional:**
+
+![imagen 59](59.png)
+
+
+3. ***Relación muchos a muchos***
+
+Tiene la forma **Pk1**, **Fk1**,**Pk2**, **Fk2**.
+
+![imagen 56](56.png)
+
+![imagen 57](57.png)
+
+- **Diagrama relacional:**
+
+![imagen 60](60.png)
+
+Debemos verificar si cada sección es en verdad una tabla o solo son campos que se agregan a una tabla existente.
+
+En el ejemplo existen varias maneras de colocar el sexo y la raza de la mascota, si un día realizamos una consulta de estos campos pasaríamos un largo tiempo buscando la información de todos los animales registrados. Por tal razón, estos datos son tablas que estaban siendo disfrazadas por campos. 
+
+Entonces corrigiendo los errores se vería de la siguiente manera: 
+
+![imagen 61](61.png)
+
+- **Diagrama relacional:**
+
+![imagen 62](62.png)
+
+## Clase # 32
+    Fecha: 6 de febrero del 2024
+-------
+### <span style="color:orange"></span>
+
+## Clase # 33
+    Fecha: 7 de febrero del 2024
+-------
+### <span style="color:orange"></span>
+
+## Clase # 34
+    Fecha: 8 de febrero del 2024
+-------
+### <span style="color:orange"></span>
+
+## Clase # 35
+    Fecha: 9 de febrero del 2024
+-------
+### <span style="color:orange"></span>
+
+## Clase # 36
+    Fecha: 10 de febrero del 2024
+-------
+### <span style="color:orange"></span>
+
+
+
