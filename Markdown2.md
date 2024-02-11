@@ -1875,27 +1875,420 @@ Entonces corrigiendo los errores se vería de la siguiente manera:
 ## Clase # 32
     Fecha: 6 de febrero del 2024
 -------
-### <span style="color:orange"></span>
+### <span style="color:orange">Normalización</span>
+
+También conocida como ***modelo lógico*** o MER.
+
+El modelo lógico es el resultado de una normalización que permite agrupar campos en tablas relacionadas entre sí y evitar redundancia de datos.
+
+Existen tres tipos:
+
+1. 1...1 (Pk, Pk)
+
+2. 1...* (Pk, Fk)
+
+3. *... * (Pk, Fk, Fk, Pk)
+
+Donde cada uno posee ***atomicidad***, validando que los datos estén en forma adecuada.
+
+Para normalizar una base de datos debemos seguir estos pasos:
+
+1. Identificar las tablas y atributos que van a ser parte de nuestra BD.
+2. Dividir estas entidades en tablas.
+3. Establecer claves primarias y foráneas para establecer relación entre ellas.
+4. Proporcionar un nombre descriptivo a las columnas.
+
+Las tablas tienen una parte horizontal y otra vertical.
+
+![imagen 63](63.png)
+
+El ***Id*** es una columna común a todas las tablas, sirve como identificador único para clusterizar, de modo que nos ayuda a organizar, no permite repetidos y hace que el proceso de búsqueda sea más rápido en algunos casos.
+
+**Modelo relacional**
+
+El modelo relacional en bases de datos es un enfoque para organizar y estructurar la información en una base de datos. Fue propuesto inicialmente por Edgar F. Codd en la década de 1970 y se ha convertido en uno de los modelos más utilizados para la gestión de datos.
+
+En el modelo relacional, los datos se organizan en tablas bidimensionales llamadas relaciones. Cada tabla está compuesta por filas y columnas, donde cada fila representa una instancia individual de los datos y cada columna representa un atributo o campo específico de esos datos. Las relaciones entre las tablas se establecen mediante la coincidencia de valores en columnas comunes, lo que se conoce como claves primarias y claves foráneas.
+
+Las principales características del modelo relacional incluyen:
+
+- **Estructura tabular:** Los datos se organizan en tablas, lo que facilita la visualización y comprensión de la estructura de la base de datos.
+
+- **Integridad referencial:** Las relaciones entre las tablas se gestionan mediante el uso de claves primarias y foráneas, lo que garantiza la coherencia y la integridad de los datos.
+
+- **Independencia física de los datos:** El modelo relacional permite separar la forma en que se almacenan los datos de la forma en que se accede a ellos, lo que facilita la gestión y el mantenimiento de la base de datos.
+
+- **Operaciones relacionales:** El modelo relacional proporciona un conjunto de operaciones estándar para manipular y consultar los datos, como selección, proyección, unión y diferencia.
+
+![imagen 64](64.png)
+
+> En la mayoría de los campos los números se pueden repetir, las palabras no; por esa razón se utiliza un Id. Además, los nombres de los campos van en singular.
+
+***Equivalencia muchos a muchos***
+
+![imagen 65](65.png)
+
+***Proceso de borrado***
+
+![imagen 66](66.png)
+
+Cuando se hace un borrado de tablas, primero se eliminan los hijos y luego el papá, contrario a crear.
+
+> Todas las tablas deben tener un campo **FechaCrea**, **FechaModifica** y el **Id** del usuario que las modifica.
+
+![imagen 67](67.png)
+
+**Modelo físico**
+
+***Lenguaje de Definición de Datos (DDL)***
+
+Se refiere a un conjunto de comandos o instrucciones que se utilizan para definir y gestionar la estructura de una base de datos y sus objetos asociados. Esto incluye la creación, modificación y eliminación de tablas, índices, vistas, esquemas, restricciones y otros elementos de la base de datos.
+
+Ejemplo: 
+
+![imagen 68](68.jpg)
+
+> Siempre arrancamos con el nombre de la tabla. 
+
+Utilizamos ***references*** para un Fk.
+
+> Para tener un código limpio y legible igualmente se hace uso de la identación (tabulado).
+
+Con **drop** se elimina una tabla.
+
+***Lenguaje de Definición de Datos (DML)***
+
+Se refiere a un conjunto de comandos o instrucciones utilizados para manipular los datos almacenados en una base de datos. A diferencia de DDL (Data Definition Language), que se utiliza para definir y gestionar la estructura de la base de datos y sus objetos, DML se centra en las operaciones relacionadas con los datos mismos, como la inserción, modificación, eliminación y consulta de datos.
+
+Aquí se pone en práctica el **CRUD**, de la siguientr manera:
+
+- **Create:** Insert into ... values(...)
+
+Ejemplo:
+
+```sql
+Insert into Sexo ( IdSexo
+                    , Nombre
+                    , Observación
+                    , FechaCrea
+                    , FechaModifica
+);
+
+values ( 1
+        , "Hombre"
+        , ""
+        , 06/02/2024
+        , null
+);
+
+values ( 2
+        , "Mujer"
+        , ""
+        , Date("NOW")
+        , null
+);
+```
+> El ***trigger*** controla los datos para que se evite poner cualquier cosa en los campos.
+
+- **Read:** Select * from... where..
+
+Ejemplo:
+
+Para seleccionar toda la tabla:
+
+```sql
+Select * from Sexo;
+```
+
+Para seleccionar algunos campos de la tabla:
+
+```sql
+Select Nombre, FechaCrea from Sexo;
+```
+
+Para seleccionar específicamente una columna de la tabla:
+
+```sql
+Select * from Sexo where IdSexo = 1;
+```
+
+Para seleccionar varias columnas de la tabla:
+
+```sql
+Select * from Sexo where IdSexo < 4;
+```
+
+o
+
+```sql
+Select * from Sexo where IdSexo = 1 OR IdSexo = 2;
+```
+
+- **Update:** Update .. set ... where...
+
+Para actualizar todo el campo de una tabla:
+
+```sql
+Update Sexo set Nombre = "HOMBRE"
+```
+
+Para actualizar una columna de un campo de una tabla:
+
+```sql
+Update Sexo set Nombre = "HOMBRE" where IdSexo = 4;
+```
+
+- **Delete:** Delete from...
+
+```sql
+Delete from Sexo where IdSexo = 4;
+```
 
 ## Clase # 33
     Fecha: 7 de febrero del 2024
 -------
-### <span style="color:orange"></span>
+### <span style="color:cyan">Ejercicio normalización - parte 1</span>
+
+**PoliTinder**
+
+Es una aplicación que se encarga de registrar la información de sus usuarios, el tipo de relación que tienen entre ellos, citas acordadas y el envío de un presente de un usuario a otro, ya sea de manera presencial o virtual.
+
+![imagen 71](71.png)
+
+***Diagrama relacional***
+
+![imagen 69](69.png)
+
+***Registros de cada tabla***
+
+![imagen 70](70.png)
+
+Aunque una tabla tenga pocos registros, eso me ayuda a caracterizar otras tablas más complejas.
+
+***Jerarquía***
+
+La jerarquía en una base de datos, específicamente en el contexto de la estructura de datos, se refiere a la organización de los elementos de datos en diferentes niveles. Una jerarquía en una base de datos puede representarse de varias formas, dependiendo de la estructura y el diseño de la base de datos.
+
+Ejemplo básico de una jerarquía en una base de datos:
+
+- **Base de datos:** La base de datos es el nivel más alto de la jerarquía y puede contener múltiples conjuntos de datos o tablas.
+
+- **Tabla:** Dentro de una base de datos, hay tablas que contienen los datos organizados en filas y columnas. Cada tabla tiene un nombre único y está diseñada para almacenar un tipo específico de datos.
+
+- **Campos/Columnas:** Los campos o columnas son los elementos individuales dentro de una tabla que representan atributos o características de los datos. Cada campo tiene un nombre y un tipo de datos asociado.
+
+- **Filas/Registros:** Las filas o registros son instancias individuales de datos dentro de una tabla. Cada fila representa una entrada única en la tabla y contiene valores para cada campo correspondiente.
+
+***Jerarquía dentro de una misma tabla (Herencia)***
+
+Se da cuando tenemos un diagrama relacional de la siguiente forma:
+
+![imagen 72](72.png)
+
+Representación en formato tabular:
+
+| IdUbicacion | IdJerarquia | Nombre    |
+|-------------|-------------|-----------|
+| 1           | -           | Ecuador   |
+| 2           | -           | Colombia  |
+| 3           | 1           | Costa     |
+| 4           | 1           | Sierra    | 
+| 5           | 1           | Oriente   | 
+| 6           | 4           | Pichincha | 
+| 7           | 4           | Loja      | 
+| 8           | 6           | Quito     | 
 
 ## Clase # 34
     Fecha: 8 de febrero del 2024
 -------
-### <span style="color:orange"></span>
+### <span style="color:pink">Ejercicio normalización - parte 2</span>
+
+Creamos nuevas carpetas en nuestro workspace:
+
+- **database:** Almacena las tablas con sus respectivos registros creados.
+- **Design:** Etapa de diseño, lugar donde se realiza el diagrama relacional.
+- **Script:** Aquí se crea el DDL Y EL DML.
+
+> La extensión de los archivos en database es **.sqlite** y en Script es **.sql**. 
+
+***Diagrama relacional modo pro***
+
+![imagen 73](73.png)
+
+***Scripts***
+
+En los Scripts siempre debe haber un encabezado, como por ejemplo:
+
+/*
+copyRyght 2024 ...
+...
+..
+*/
+
+Antes de ejecutar el DDL o el DML, primero debemos conectar  a la base de datos SQLite creada en la carpeta database.
+
+- **DDL_PoliTinder**
+
+```sql
+-- database: ../database/POLITINDER.sqlite
+/*
+copyRyght 2024 ...
+...
+..
+*/
+-- DROP TABLE RegaloTipo;
+DROP TABLE IF EXISTS RegaloTipo;
+DROP TABLE IF EXISTS PersonaRol;
+DROP TABLE IF EXISTS PersonaSexo;
+DROP TABLE IF EXISTS Regalo;
+DROP TABLE IF EXISTS Persona;
+DROP TABLE IF EXISTS Relacion;
+DROP TABLE IF EXISTS RelacionTipo;
+DROP TABLE IF EXISTS Cita;
+DROP TABLE IF EXISTS RegaloEnvio;
+
+-- Catalogo
+
+CREATE TABLE RegaloTipo (
+    IdRegaloTipo    INTEGER PRIMARY KEY AUTOINCREMENT
+    , Nombre        TEXT NOT NULL UNIQUE 
+    , Observacion   TEXT
+    , FechaCrea     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , FechaModifica DATETIME  
+);
+CREATE TABLE PersonaRol (
+    IdPersonaRol         INTEGER PRIMARY KEY AUTOINCREMENT
+    , IdPersonaRol_Padre INTEGER REFERENCES PersonaRol (IdPersonaRol)
+    , Nombre             TEXT NOT NULL UNIQUE 
+    , Observacion        TEXT
+    , FechaCrea          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , FechaModifica      DATE 
+);
+CREATE TABLE PersonaSexo (
+    IdPersonaSexo   INTEGER PRIMARY KEY AUTOINCREMENT
+    , Nombre        TEXT NOT NULL UNIQUE 
+    , Observacion   TEXT
+    , FechaCrea     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , FechaModifica DATE 
+);
+CREATE TABLE Regalo (
+    IdRegalo        INTEGER PRIMARY KEY AUTOINCREMENT
+    , IdRegaloTipo  INTEGER NOT NULL REFERENCES  RegaloTipo(IdRegaloTipo)
+    , Nombre        TEXT NOT NULL UNIQUE 
+    , Precio        REAL 
+    , Stock         INTEGER
+    , Observacion   TEXT
+    , FechaCrea     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , FechaModifica DATE 
+);
+CREATE TABLE Persona (
+    IdPersona       INTEGER PRIMARY KEY AUTOINCREMENT
+    , IdPersonaRol  INTEGER NOT NULL REFERENCES PersonaRol(IdPersonaRol)
+    , IdPersonaSexo INTEGER NOT NULL REFERENCES PersonaSexo(IdPersonaSexo)
+    , Cedula        TEXT NOT NULL
+    , Nombre        TEXT NOT NULL
+    , Observacion   TEXT
+    , FechaCrea     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , FechaModifica DATE
+);
+CREATE TABLE Relacion (
+    IdRelacion              INTEGER PRIMARY KEY AUTOINCREMENT
+    , IdRelacionTipo        INTEGER REFERENCES RelacionTipo (IdRelacionTipo)
+    , IdPersona1            INTEGER NOT NULL REFERENCES Persona (IdPersona)
+    , IdPersona2            INTEGER NOT NULL REFERENCES Persona (IdPersona)
+    , FechaInicioRelacion   DATE NOT NULL
+    , Observacion           TEXT
+    , FechaCrea             DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , FechaModifica         DATE 
+);
+CREATE TABLE RelacionTipo (
+    IdRelacionTipo  INTEGER PRIMARY KEY AUTOINCREMENT
+    , Nombre        TEXT NOT NULL UNIQUE 
+    , Observacion   TEXT
+    , FechaCrea     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , FechaModifica DATE 
+);
+CREATE TABLE Cita(
+    IdCita              INTEGER PRIMARY KEY AUTOINCREMENT
+    , IdPersona1        INTEGER NOT NULL REFERENCES Persona (IdPersona)
+    , IdPersona2        INTEGER NOT NULL REFERENCES Persona (IdPersona)
+    , FechaCita         DATE NOT NULL
+    , Observacion       TEXT
+    , FechaCrea         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , FechaModifica     DATE 
+);
+CREATE TABLE RegaloEnvio (
+    IdRegaloEnvio       INTEGER PRIMARY KEY AUTOINCREMENT
+    , IdRegalo          INTEGER  NOT NULL REFERENCES Regalo (IdRegalo)
+    , IdPersonaEnvia    INTEGER NOT NULL REFERENCES Persona (IdPersona)
+    , IdPersonaRecibe   INTEGER NOT NULL REFERENCES Persona (IdPersona)
+    , Observacion       TEXT
+    , FechaEnvio        DATE NOT NULL
+    , FechaCrea         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , FechaModifica     DATE 
+);
+```
+
+***UNIQUE*** ayuda a controlar a que no se repitan los datos en una columna.
+
+> Se crean primero los padres y luego los hijos.
+
+Para borrar una tabla existen dos métodos:
+
+1. Elimina la tabla directamente, si no existe entonces el programa se cuelga.
+
+```sql
+DROP TABLE Regalo;
+```
+
+2. Es un borrado más inteligente puesto que verifica si existe la tabla y luego la elimina, sin embargo si existe una mala escritura en el nombre de la tabla no avisa y puede confundir al DVA.
+
+```sql
+DROP TABLE IF EXISTS Regalo;
+```
+
+Para que una persona no pueda tener una relación consigo mismo se acude a un ***constraint***.
+
+Un ***constraint*** (restricción o "constrain" en inglés) es una regla que se define para imponer ciertas condiciones o restricciones sobre los datos que se pueden almacenar en una tabla. Estas restricciones aseguran la integridad y la consistencia de los datos en la base de datos.
+
+> Para ejecutar todo el DDL o el DML hay que aplastar varias veces F5, para comprobar que esté funcionando correctamente la base de datos.
+
+- **DML_PoliTinder**
+
+```sql
+-- database: ../database/POLITINDER.sqlite
+INSERT INTO RegaloTipo (
+    Nombre       
+    , Observacion  
+) VALUES (
+    "VIRTUAL"
+    , "Regalo Virtual para pruebas"
+);
+INSERT INTO RegaloTipo (
+    Nombre       
+    , Observacion    
+) VALUES (
+    "Presencial"
+    , "Regalo Presencial para pruebas"
+);
+```
 
 ## Clase # 35
-    Fecha: 9 de febrero del 2024
+    Fecha: 14 de febrero del 2024
+-------
+### <span style="color:lightgreen"></span>
+
+## Clase # 36
+    Fecha: 15 de febrero del 2024
 -------
 ### <span style="color:orange"></span>
 
-## Clase # 36
-    Fecha: 10 de febrero del 2024
+## Clase # 37
+    Fecha: 16 de febrero del 2024
 -------
 ### <span style="color:orange"></span>
+
+
 
 
 
