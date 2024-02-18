@@ -2276,19 +2276,645 @@ INSERT INTO RegaloTipo (
 ## Clase # 35
     Fecha: 14 de febrero del 2024
 -------
-### <span style="color:lightgreen"></span>
+### <span style="color:lightgreen">Data</span>
+
+***Escalabilidad***
+
+La escalabilidad se refiere a la capacidad de un sistema o aplicación para manejar un aumento en la carga de trabajo o en la cantidad de usuarios sin comprometer su rendimiento, disponibilidad o calidad del servicio.
+
+![imagen 74](74.png)
+
+Existen dos tipos principales de escalabilidad en programación:
+
+- **Escalabilidad vertical:** También conocida como "escalabilidad hacia arriba", implica aumentar la capacidad de recursos en una única máquina, como agregar más RAM, CPU o almacenamiento. Sin embargo, este enfoque tiene un límite físico y puede volverse prohibitivamente costoso o técnicamente difícil alcanzar niveles muy altos de escalabilidad.
+
+- **Escalabilidad horizontal:** También llamada "escalabilidad hacia fuera", consiste en agregar más máquinas o nodos al sistema para distribuir la carga de trabajo. Este enfoque suele ser más sostenible y rentable a largo plazo, ya que permite una expansión más flexible y distribuida. La arquitectura de sistemas escalables horizontalmente se basa en la capacidad de dividir la carga entre múltiples instancias de la aplicación y coordinar su funcionamiento de manera eficiente.
+
+**Arquitectura N-TIER**
+
+El modelo N-Tier, también conocido como arquitectura de múltiples capas o arquitectura en capas, es un enfoque de diseño de software que divide una aplicación en diferentes capas o niveles lógicos, cada uno de los cuales realiza funciones específicas.
+
+![imagen 75](75.png)
+
+Las capas en un modelo N-Tier típicamente incluyen:
+
+1. **Capa de Presentación (Frontend):** Esta es la capa con la que interactúa el usuario final. Se encarga de presentar la interfaz de usuario y recopilar la entrada del usuario. Puede consistir en interfaces de usuario web, aplicaciones móviles, aplicaciones de escritorio, etc.
+
+2. **Capa de Lógica de Negocio (Backend):** También conocida como capa de lógica de aplicación, esta capa se encarga de procesar la lógica de negocio de la aplicación. Aquí se realizan operaciones como validación de datos, cálculos, acceso a datos y aplicaciones de reglas empresariales.
+
+3. **Capa de Acceso a Datos:** Esta capa proporciona acceso a la base de datos u otras fuentes de datos. Se encarga de realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en la base de datos y traducir los datos entre el formato utilizado en la aplicación y el formato utilizado en la base de datos.
+
+Para enviar información a una base de datos, se necesita de un ***pipeline***, el cual permite la comunicación entre el cliente y el servidor. De modo que cada registro ingrese uno por uno a través de un solo canal a la base de datos, restringiendo el acceso de cualquier información al medio. Esto se lleva a cabo con la ayuda de dos componentes fundamentales:
+
+- **connection (conexión):** Se refiere a la conexión establecida entre una aplicación y la base de datos. Esta conexión permite que la aplicación envíe consultas a la base de datos y reciba resultados. En JAVA se utiliza ***SqlLiteDataHelper.java***.
+
+- **path (ruta):** Es la secuencia de tablas y relaciones que se siguen para acceder a los datos deseados. Para JAVA se ocupa un ***odbcdrive.jar***.
+
+***SqlLiteDataHelper.java*** contiene una clase o un conjunto de clases que proporcionan funcionalidades para interactuar con una base de datos SQLite desde una aplicación Java. Por otra parte, ***odbcdrive.jar*** contiene el controlador JDBC (Java Database Connectivity) necesario para acceder a una base de datos a través del protocolo ODBC (Open Database Connectivity).
+
+> Los controladores JDBC son bibliotecas Java que permiten a las aplicaciones Java interactuar con bases de datos utilizando el estándar JDBC. El protocolo ODBC, por otro lado, es una API que permite a las aplicaciones acceder a varias bases de datos utilizando un conjunto común de funciones.
+
+![imagen 76](76.png)
+
+***Ejemplo de un diagrama de arquitectura N-TIER***
+
+![imagen 77](77.png)
+
+***Pipeline***
+
+Se ocupa el patrón Singleton para generar una sola tubería, es decir una sola conexión a la base de datos.
+
+El código para el SqlLiteDataHelper es el siguiente:
+
+```java
+public abstract class SQLiteDataHelper {
+    private static String DBPathConnection = "jdbc:sqlite:database//SEXO.sqlite";
+    private static Connection conn = null;
+
+    // Constructor
+    
+    protected SQLiteDataHelper (){}
+
+    // Conexion
+
+    protected static synchronized Connection openConnection () throws Exception {
+        try {
+            if (conn == null)
+                conn = DriverManager.getConnection(DBPathConnection);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return conn;
+    }
+
+    // Desconectarse de la base
+
+    protected static void closeConnection() throws Exception {
+        try {
+            if (conn != null)
+                conn.close();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+}
+```
+
+Donde **throw** significa capturar el error para pasarlo a otra capa. A esto se lo conoce como un ***burbujeo de secciones***.
+
+Además, **synchronized** significa que solo un hilo puede ejecutar ese método a la vez. Esto es útil para evitar problemas de concurrencia cuando varios hilos intentan acceder o modificar datos en la base de datos al mismo tiempo.
+
+> Los ***hilos*** son secuencias de instrucciones que pueden ser ejecutadas de forma independiente dentro de un proceso. Un proceso puede contener uno o varios hilos, y cada hilo puede ejecutar un conjunto de instrucciones de manera concurrente con otros hilos del mismo proceso.
+
+***DAC***
+
+Componente de acceso a datos. Es el responsable de realizar las operaciones CRUD en una base de datos.
+
+Por cada entidad que tiene la base de datos, se debe crear un DAC.
+
+Ejemplo en código:
+
+```java
+public class DACSexo extends SQLiteDataHelper {
+    public ResultSet getAllSexo () throws Exception {
+        String query = "SELECT IdSexo, Nombre FROM Sexo"; 
+        try {
+            Connection conn = openConnection(); // jdbc:sqlite:data\\basedeDatos.db
+            Statement stmt = conn.createStatement();  // CRUD: Select *
+            return stmt.executeQuery(query); // Resultado
+        } catch (Exception e) {
+            throw e;
+        }
+    } 
+}
+```
+
+> ***query*** significa consulta.
+
+***query*** se prueba primero desde **</> Editor SQL** para verificar que esté bien escrito y luego lo pasamos al método de la clase DAC que hayamos creado.
+
+```sql
+-- database: C:\Users\Ryzen 3\OneDrive\Documentos\SEGUNDO SEMESTRE\PROGRAMACIÓN II\BASE\database\SEXO.sqlite
+SELECT IdSexo, Nombre FROM Sexo;
+```
+
+Por otra parte, para comprobar que el método esté funcionando correctamente, lo probamos desde App.java como se muestra a continuación:
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        DACSexo sexo = new DACSexo();
+        ResultSet rs = sexo.getAllSexo();
+        while (rs.next())
+            System.out.println(rs.getString(1) + " " + rs.getString(2));
+    }
+}
+```
+
+> En Java, ***ResultSet*** es una interfaz que forma parte del paquete java.sql. Representa un conjunto de resultados obtenidos a partir de una consulta ejecutada en una base de datos relacional utilizando JDBC.
+
+Para obtener la información de algunos registros con ciertas particularidades debemos modificar el query.
+
+Por ejemplo, escribir "SELECT IdSexo, Nombre FROM Sexo WHERE IdSexo = 1" en vez de "SELECT IdSexo, Nombre FROM Sexo".
+
+El query puede tener un formato más agradable y comprensible, como por ejemplo:
+
+```java
+        String query =      "SELECT IdSexo, Nombre "
+                        +   "FROM Sexo "
+                        +   "WHERE IdSexo = 1"; 
+```
+
+> Recordemos que si se desea evitar errores en la ejecución del código de una consulta es importante probar el query primero en **</> Editor SQL** para posteriormente colocarlo en un método de una clase DAC. 
 
 ## Clase # 36
     Fecha: 15 de febrero del 2024
 -------
-### <span style="color:orange"></span>
+### <span style="color:brown">DAC</span>
+
+**DAC**
+
+Un DAC (Data Access Component) es un módulo de software que se utiliza para acceder y manipular datos en una aplicación. Estos componentes son una parte integral de muchas aplicaciones empresariales y de software, ya que permiten interactuar con bases de datos, sistemas de archivos, servicios web u otras fuentes de datos.
+
+Algunas características comunes de los Data Access Components incluyen:
+
+- **Conexión a la fuente de datos:** Proporcionan métodos para establecer conexiones con bases de datos, sistemas de archivos u otros sistemas de almacenamiento de datos.
+
+- **Consultas y actualizaciones:** Permiten ejecutar consultas SQL u otras consultas específicas del tipo de fuente de datos para recuperar y modificar datos según sea necesario.
+
+- **Mapeo de objetos-relacionales (ORM):** Algunos Data Access Components ofrecen capacidades de mapeo objeto-relacional, lo que permite a los desarrolladores trabajar con objetos de datos en lugar de consultas directas a la base de datos.
+
+- **Transacciones:** Soportan transacciones para garantizar la integridad y la consistencia de los datos al realizar operaciones múltiples y relacionadas.
+
+- **Optimización de consultas:** Proporcionan herramientas para optimizar el rendimiento de las consultas y minimizar el tiempo de acceso a los datos.
+
+![imagen 78](78.png)
+
+***DAO***
+
+Un DAO (Data Access Object) es un patrón de diseño utilizado en programación para encapsular la lógica de acceso a una fuente de datos, como una base de datos, un archivo o un servicio web. El objetivo principal del patrón DAO es separar la lógica de acceso a datos de la lógica de negocio de una aplicación, lo que facilita el mantenimiento, la escalabilidad y la reutilización del código.
+
+En nuestro caso, se ocupa para realizar el **CRUD**.
+
+![imagen 79](79.png)
+
+***DTO***
+
+Un DTO (Data Transfer Object) es un objeto utilizado para transferir datos entre componentes de un sistema de software. Su propósito principal es encapsular un conjunto de datos y enviarlo de un lado a otro de manera eficiente y estructurada, sin incluir lógica de negocio adicional.
+
+![imagen 80](80.png)
+
+En código se representa de la siguiente manera:
+
+```java
+public interface IDAO <T> {
+    public void create (T obj);
+
+    // Existen dos formas para leer
+    public T read(int id); // Leer un registro
+    public List<T> readAll(); // Leer todos los registros
+
+    public void update(T obj);
+
+    // Existen dos formas para eliminar
+    public void delete(int id); // Por Id
+    public void delete (T obj);
+}
+```
+
+> Algunos métodos, como el update o el delete, podrían devolver un boolean para que sea un escenario más inteligentes.
+
+
+***Generic***
+
+Los genéricos en programación son una característica que permite escribir código que puede trabajar con diferentes tipos de datos de manera segura y reutilizable. La idea principal detrás de los genéricos es la parametrización de tipos, lo que significa que puedes crear clases, interfaces y métodos que actúen sobre tipos específicos sin especificar esos tipos de antemano.
+
+Es un tipo de comportamiento que otorga un nivel más alto de programación, la posibilidad de acoplarse a cualquier clase.
+
+***Resumen***
+
+![imagen 81](81.png)
+
+***Borrado lógico***
+
+Una manera más apropiada para eliminar registros de una tabla es mediante la utilización de un campo que defina el estado de todos los registros creados de dicha tabla.
+
+Ejemplo de Estado: A (Activo) --> X (Eliminado)
+
+Aquellos registros que tengan A en el campo Estado se mostrarán en las consultas, por el contrario los que posean X no aparecerán, es decir, permanecerán ocultos.
+
+Esto lo hacemos con el propósito de que si en algún momento decidimos borrar la información, podamos recuperar la información sin ningún problema.
+
+***Copycopyright***
+
+Todos los Scripts deben tener un copyright en la parte superior. Como por ejemplo:
+
+|----------------------------------------|
+| (©) 2K24 EPN-FIS, All rights reserved. |
+| mateo.simbana@epn.edu.ec   mateitopro  |
+|----------------------------------------|
+Autor: mateitopro
+Fecha: 17.feb.2k24
+Script: Creacion de la tabla sexo + datos
+
+***DAC en código***
+
+Para el ejemplo se trabajará con la tabla/clase Sexo.
+
+1. **Base de datos:** En un solo Script se coloca el DDL, DML y pruebas de consultas.
+
+```sql
+DROP TABLE IF EXISTS Sexo;
+CREATE TABLE Sexo (
+      IdSexo        INTEGER     NOT NULL PRIMARY KEY AUTOINCREMENT
+    , Nombre        VARCHAR(10) NOT NULL UNIQUE 
+    , Estado        VARCHAR(1)  NOT NULL DEFAULT('A') 
+    , Observacion   TEXT
+    , FechaCrea     DATETIME    NOT NULL DEFAULT (datetime('now','localtime'))
+    , FechaModifica DATETIME 
+); 
+---------------------------------------------------------------------
+INSERT INTO SEXO (NOMBRE) VALUES 
+  ("Femenino")
+, ("Masculino")
+, ("Hibrido");
+
+SELECT * FROM SEXO;
+
+SELECT IdSexo, Nombre
+FROM SEXO
+WHERE Estado = 'A' AND IdSexo = 2;
+
+SELECT count(*)
+FROM SEXO
+WHERE Estado = 'A';
+```
+
+2. **DTO:** Se colocan los campos de la tabla como atributos con sus respectivos getter, setter, además se crea un constructor vacío y otro con todas las propiedades. Por último se realiza un Override al método ***toString*** para presentar todos los registros desde la terminal de manera fácil y efectiva.
+
+```java
+public class SexoDTO {
+    private int    IdSexo;       
+    private String Nombre;       
+    private String Estado;       
+    private String Observacion;  
+    private String FechaCrea;    
+    private String FechaModifica;
+
+    public SexoDTO() {
+    }
+
+    public SexoDTO(int idSexo, String nombre, String estado, String observacion, String fechaCrea, String fechaModifica) {
+        IdSexo = idSexo;
+        Nombre = nombre;
+        Estado = estado;
+        Observacion = observacion;
+        FechaCrea = fechaCrea;
+        FechaModifica = fechaModifica;
+    }
+
+    public int getIdSexo() {
+        return IdSexo;
+    }
+    public void setIdSexo(int idSexo) {
+        IdSexo = idSexo;
+    }
+    public String getNombre() {
+        return Nombre;
+    }
+    public void setNombre(String nombre) {
+        Nombre = nombre;
+    }
+    public String getEstado() {
+        return Estado;
+    }
+    public void setEstado(String estado) {
+        Estado = estado;
+    }
+    public String getObservacion() {
+        return Observacion;
+    }
+    public void setObservacion(String observacion) {
+        Observacion = observacion;
+    }
+    public String getFechaCrea() {
+        return FechaCrea;
+    }
+    public void setFechaCrea(String fechaCrea) {
+        FechaCrea = fechaCrea;
+    }
+    public String getFechaModifica() {
+        return FechaModifica;
+    }
+    public void setFechaModifica(String fechaModifica) {
+        FechaModifica = fechaModifica;
+    }
+
+    @Override
+    public String toString(){
+        return getClass().getName()
+        + "\nIdSexo:        " + getIdSexo()             
+        + "\nNombre:        " + getNombre()             
+        + "\nEstado:        " + getEstado()             
+        + "\nObservacion:   " + getObservacion()   
+        + "\nFechaCrea:     " + getFechaCrea()       
+        + "\nFechaModifica: " + getFechaModifica();   
+    }
+}
+```
+
+3. **IDAO:** Similar al que se presentó anteriormente.
+
+4. **DAO:** Se implementa IDAO y se modifican los métodos proporcionados por la interfaz (CRUD). 
+
+```java
+public class SexoDAO extends SQLiteDataHelper implements IDAO<SexoDTO>{
+    ...
+    @Override
+    public List<SexoDTO> readAll() throws Exception {
+        List <SexoDTO> lst = new ArrayList<>();
+        String query = " SELECT IdSexo      "
+                     + " , Nombre           "
+                     + " , Estado           "
+                     + " , Observacion      "
+                     + " , FechaCrea        "
+                     + " , FechaModifica    "
+                     + " FROM SEXO          "
+                     + " WHERE Estado = 'A' ";
+        try {
+            Connection conn = openConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()){
+                SexoDTO s = new SexoDTO(  rs.getInt(1)       // Id
+                                        , rs.getString(2)    // Nombre       
+                                        , rs.getString(3)    // Estado       
+                                        , rs.getString(4)    // Observacion  
+                                        , rs.getString(5)    // FechaCrea    
+                                        , rs.getString(6));  // FechaModifica
+                lst.add(s);
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+        return lst;
+    }
+
+    @Override
+    public SexoDTO read(Integer id) throws Exception {
+        SexoDTO oS = new SexoDTO();
+        String query = " SELECT IdSexo      "
+                     + " , Nombre           "
+                     + " , Estado           "
+                     + " , Observacion      "
+                     + " , FechaCrea        "
+                     + " , FechaModifica    "
+                     + " FROM SEXO          "
+                     + " WHERE Estado = 'A' AND IdSexo = " + id.toString();
+        try {
+            Connection conn = openConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()){
+                oS = new SexoDTO(  rs.getInt(1)       // Id
+                                        , rs.getString(2)    // Nombre       
+                                        , rs.getString(3)    // Estado       
+                                        , rs.getString(4)    // Observacion  
+                                        , rs.getString(5)    // FechaCrea    
+                                        , rs.getString(6));  // FechaModifica
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+        return oS;
+    }
+    ...
+```
+
+5. **Testing:** Probamos cada uno de los métodos que hemos implementado anteriormente, para verificar si funcionan.
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        // Probando read()
+        SexoDAO oS = new SexoDAO();
+        System.out.println(oS.read(2).toString());
+        // Probando readAll()
+        for (SexoDTO s : oS.readAll()) {
+             System.out.println(s.toString());
+         }
+    }
+}
+```
 
 ## Clase # 37
     Fecha: 16 de febrero del 2024
 -------
-### <span style="color:orange"></span>
+### <span style="color:orange">BLL</span>
 
+BLL (Capa de Lógica de Negocio) es una capa en la arquitectura de una aplicación de software que se encarga de implementar y gestionar la lógica de negocio o reglas de negocio de la aplicación. Esta capa contiene la lógica que define cómo se procesan y manipulan los datos de acuerdo con las reglas y requisitos específicos del dominio del negocio.
 
+Siguiendo con el ***DAC***, para insertar, actualizar o eliminar algún registro debemos enviar parámetros como se observa a continuación:
 
+![imagen 82](82.png)
 
+En código:
+
+```java
+public class SexoDAO extends SQLiteDataHelper implements IDAO<SexoDTO>{
+
+    @Override
+    public boolean create(SexoDTO entity) throws Exception {
+        String query = "INSERT INTO SEXO (Nombre) VALUES (?)";
+        try {
+            Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, entity.getNombre());
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public List<SexoDTO> readAll() throws Exception {
+        ...
+    }
+
+    @Override
+    public SexoDTO readBy (Integer id) throws Exception {
+        ...
+    }
+
+    @Override
+    public boolean update(SexoDTO entity) throws Exception {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        String query = "UPDATE SEXO SET Nombre = ?, FechaModifica = ? WHERE IdSexo = ?";
+        try {
+            Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, entity.getNombre());
+            pstmt.setString(2, dtf.format(now).toString());
+            pstmt.setInt(3  , entity.getIdSexo());
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public boolean delete(Integer id) throws Exception {
+        String query = "UPDATE SEXO SET Estado = ? WHERE IdSexo = ?";
+        try {
+            Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, "X");
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+}
+```
+
+> Para no desgastar demasiado la lógica de programación con el update, es mejor mandar a actualizar todos los campos de un registro con este método.
+
+Realizamos un Testing en App para verificar su  correcto funcionamiento:
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        SexoDTO s = new SexoDTO();
+        s.setIdSexo(3);
+        s.setNombre("Hibrido");
+        s.setFechaModifica("2023-02-17 20:50:11"); // La fecha se coloca automáticamente, no se puede engañar al sistema
+
+        SexoDAO oS = new SexoDAO();
+        // oS.create(s);   
+        oS.update(s);   
+        System.out.println(oS.readBy(3).toString());
+    }
+}
+```
+
+> Con un método llamado ***recover*** podemos recuperar los datos eliminados de manera lógica.
+
+Existe un grave error mientras aplicamos la arquitectura N-TIER, puesto que se puede romper la estructura de capas y violar sus principios.
+
+No se puede transitar de una capa a cualquier otra porque se tiene un orden en específico. Desde la GUI se puede acceder a la BLL y desde la BLL se puede acceder a la DAC, este es el orden que obligatoriamente debe cumplir nuestro diseño.  
+
+![imagen 83](83.png)
+
+Una vez probada toda la DAC, seguimos con la BLL:
+
+```java
+public class SexoBL {
+    private SexoDTO sexo;
+    private SexoDAO sDAO = new SexoDAO();
+
+    public SexoBL() {}
+
+    public List<SexoDTO> getAll() throws Exception {
+        return sDAO.readAll();
+    }
+    public SexoDTO getBy(int idSexo) throws Exception {
+        sexo = sDAO.readBy(idSexo);
+        return sexo;
+    }
+    public boolean add (String nombre) throws Exception {
+        sexo = new SexoDTO();
+        sexo.setNombre(nombre);
+        return sDAO.create(sexo);
+    }
+    public boolean update (int idSexo, String nombre) throws Exception {
+        sexo = new SexoDTO();
+        sexo.setIdSexo(idSexo);
+        sexo.setNombre(nombre);
+        return sDAO.update(sexo);
+    }
+    public boolean delete (int idSexo) throws Exception {
+        return sDAO.delete(idSexo);
+    }
+}
+```
+
+De igual manera, realizamos pruebas en App para comprobar que todo esté en ok:
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        SexoBL sBL = new SexoBL();
+        sBL.update(5,"Macho Alfa");
+        sBL.delete(5);
+        for (SexoDTO s : sBL.getAll()) {
+            System.out.println(s.toString());
+        }
+    }
+}
+```
+
+**GUI**
+
+Se crea una carpeta denominada ***CustomerControl*** para generalizar o estandarizar los componentes de una aplicación, es decir personalizar controles que se van a utilizar dentro del programa.
+
+Por otro lado, JAVA tiene una paqueterías: AWT (uno de los primeros componentes que se crearon), JAVA Swing, JAVA FX.
+
+Nosotros vamos a trabajar con JAVA Swing, que tiene toda la paquetería necesaria integrada.
+
+![imagen 84](84.png)
+
+A continuación, se presentan algunos de los componentes más comunes proporcionados por Swing:
+
+- **JFrame:** Es el contenedor principal de una aplicación Swing. Representa la ventana principal de la aplicación y puede contener otros componentes, como paneles, botones, cuadros de texto, etc.
+
+- **JPanel:** Es un contenedor liviano que se utiliza para organizar y agrupar otros componentes. Los paneles se pueden agregar a un JFrame para dividir la interfaz de usuario en secciones lógicas.
+
+- **JButton:** Es un botón que el usuario puede hacer clic para realizar alguna acción. Puede contener texto, iconos o ambas cosas.
+
+- **JLabel:** Es un componente utilizado para mostrar texto o imágenes en la interfaz de usuario. Se utiliza comúnmente para proporcionar etiquetas descriptivas o informativas.
+
+- **JTextField:** Es un campo de texto de una sola línea donde el usuario puede ingresar y editar texto.
+
+- **JTextArea:** Es un área de texto de múltiples líneas que permite al usuario ingresar y editar texto de manera más extensa que un JTextField.
+
+- **JComboBox:** Es un componente desplegable que muestra una lista de opciones y permite al usuario seleccionar una de ellas.
+
+- **JCheckBox:** Es un componente que representa una casilla de verificación que puede estar marcada o desmarcada por el usuario.
+
+- **JRadioButton:** Es un botón de opción que representa una opción exclusiva en un grupo de opciones. Los usuarios pueden seleccionar una de varias opciones de radio en un grupo.
+
+- **JList:** Es un componente que muestra una lista de elementos y permite al usuario seleccionar uno o varios elementos de la lista.
+
+A través de la herencia podemos utilizar todos estos componentes.
+
+***ActionListener***
+
+También conocido como los "escuchadores", es una interfaz que se utiliza para manejar eventos de acción generados por componentes de la interfaz de usuario, como botones, menús desplegables, elementos de lista, entre otros.
+
+El método ***ActionPerformed*** es el único punto de entrada para invocar los clics que el usuario haga y determinar la acción que se debe realizar después.
+
+## Clase # 38
+    Fecha: 21 de febrero del 2024
+-------
+### <span style="color:fuchsia"></span>
+
+## Clase # 39
+    Fecha: 22 de febrero del 2024
+-------
+### <span style="color:gray"></span>
+
+## Clase # 40
+    Fecha: 23 de febrero del 2024
+-------
+### <span style="color:turquoise"></span>
+
+## Clase # 41
+    Fecha: 24 de febrero del 2024
+-------
+### <span style="color:salmon"></span>
 
