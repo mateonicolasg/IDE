@@ -3663,11 +3663,19 @@ public class PatException extends Exception {
 }
 ```
 
+Comprobamos su funcionalidad en App:
 
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+       SexoDAO s = new SexoDAO();
 
-## Clase # 40
-    Fecha: 23 de febrero del 2024
--------
-### <span style="color:turquoise"></span>
-
-
+        try {
+            for (SexoDTO row : s.readAll()) 
+                System.out.println(row.toString());
+        } catch (Exception e) {
+        System.out.println(e.toString());
+        }
+    }
+}
+```
