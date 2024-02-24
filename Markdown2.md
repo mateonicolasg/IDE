@@ -2901,20 +2901,419 @@ El método ***ActionPerformed*** es el único punto de entrada para invocar los 
 ## Clase # 38
     Fecha: 21 de febrero del 2024
 -------
-### <span style="color:fuchsia"></span>
+### <span style="color:fuchsia">GUI - parte 1</span>
+
+La **GUI** (Interfaz Gráfica de Usuario) es un tipo de interfaz que permite a los usuarios interactuar con dispositivos electrónicos a través de elementos gráficos como iconos, botones y ventanas, en contraposición a la línea de comandos.
+
+![imagen 85](85.png)
+
+***Splash***
+
+Un "splash" o "splash screen" es una ventana gráfica que aparece brevemente al inicio de una aplicación o programa para mostrar el logotipo de la aplicación, información sobre la versión, mensajes de carga o cualquier otro contenido relevante mientras la aplicación se está cargando en segundo plano.
+
+***SPA***
+
+SPA (Single Page Application) es un término que se utiliza para describir aplicaciones web que funcionan dentro de una única página y no requieren recargar la página entera durante el uso normal. En lugar de cargar páginas nuevas desde el servidor, las SPA cargan solo los datos necesarios y actualizan dinámicamente la página utilizando Java.
+
+![imagen 86](86.png)
+
+***Tabla localidad***
+
+Una tabla de localidades en una base de datos se utiliza típicamente para almacenar información sobre diferentes áreas geográficas, como ciudades, pueblos, estados, países, etc. Estas tablas pueden ser parte de una base de datos más grande que gestiona datos relacionados con ubicaciones geográficas, como una base de datos de clientes, una aplicación de seguimiento de pedidos o cualquier sistema que necesite asociar datos con ubicaciones geográficas específicas.
+
+Ejemplo:
+
+![imagen 87](87.png)
+
+A continuación, se presenta el código de la tabla localidad en sqlite y en las primeras dos capas de la arquitectura N-TIER:
+
+- En sqlite:
+
+```sql
+DROP TABLE IF EXISTS LocalidaEstructura;
+CREATE TABLE LocalidaEstructura (
+     IdLocalidaEstructura         INTEGER     NOT NULL PRIMARY KEY AUTOINCREMENT
+    ,IdLocalidaEstructuraPadre    INTEGER     REFERENCES  LocalidaEstructura (IdLocalidaEstructura)
+    ,Nombre                       VARCHAR(10) NOT NULL 
+    ,Estado                       VARCHAR(1)  NOT NULL DEFAULT('A')
+    ,FechaCrea                    DATETIME    DEFAULT(datetime('now','localtime'))
+    ,FechaModifica                DATETIME
+); 
+
+INSERT INTO LocalidaEstructura (IdLocalidaEstructuraPadre, Nombre) VALUES 
+(NULL,"Pais"),      -- 1
+(1,"Provincia"),    -- 2    
+(2,"Canton");       -- 3
+
+DROP TABLE IF EXISTS Localida;
+CREATE TABLE Localida (
+     IdLocalida             INTEGER     NOT NULL PRIMARY KEY AUTOINCREMENT
+    ,IdLocalidaPadre        INTEGER     REFERENCES  Localida (IdLocalida)
+    ,IdLocalidaEstructura   INTEGER     REFERENCES  LocalidaEstructura (IdLocalidaEstructura)
+    ,Nombre                 VARCHAR(10) NOT NULL 
+    ,Estado                 VARCHAR(1)  NOT NULL DEFAULT('A')
+    ,FechaCrea              DATETIME    DEFAULT(datetime('now','localtime'))
+    ,FechaModifica          DATETIME
+); 
+--------------------------------------------------------------
+INSERT INTO Localida (IdLocalidaPadre, IdLocalidaEstructura, Nombre) VALUES 
+(NULL,1,"Euador"),
+(1,2,"Pichincha"),
+(1,2,"Loja"),
+(1,2,"Azuay"),
+(2,3,"Quito"),
+(3,3,"Loja"),
+(4,3,"Cuenca");
+
+SELECT * FROM LocalidaEstructura WHERE Estado = "A";
+SELECT * FROM localida WHERE Estado = "A";
+SELECT lo.IdLocalida LocalidaId, lo.Nombre Localida, le.Nombre LocalidaTipo
+FROM localida               lo 
+JOIN LocalidaEstructura     le ON lo.IdLocalidaEstructura = le.IdLocalidaEstructura
+WHERE   lo.Estado = "A"
+AND     le.Estado = "A";
+
+SELECT lo.IdLocalida LocalidaId, lo.Nombre Localida, le.Nombre LocalidaTipo
+FROM localida               lo 
+JOIN LocalidaEstructura     le ON lo.IdLocalidaEstructura = le.IdLocalidaEstructura
+WHERE   lo.Estado = 'A'
+AND     le.Estado = 'A'
+AND     upper(le.Nombre) = upper('cantón');
+
+SELECT lo.IdLocalida LocalidaId, lo.Nombre Localida, le.Nombre LocalidaTipo FROM localida               lo  JOIN LocalidaEstructura     le ON lo.IdLocalidaEstructura = le.IdLocalidaEstructura WHERE   lo.Estado = 'A'  AND     le.Estado = 'A'  AND     upper(le.Nombre) = 'CANT?N'
+```
+> Es mejor utilizar **VARCHAR** para datos tipo text pequeños, de manera que nadie pueda poner cualquier día un libro en ese campo.
+
+***JOIN***
+
+Se refiere a una operación que combina filas de dos o más tablas basándose en una condición relacionada. Esta operación es fundamental para consultar datos de múltiples tablas simultáneamente y obtener resultados completos y útiles.
+
+Dos tablas se unen mediante un Pk de una tabla, el cual pasa a ser un Fk de otra tabla.
+
+- En DAC:
+
+***DTO***
+
+```java
+public class LocalidadDTO {
+    private Integer LocalidaId;
+    private String  Localida;
+    private String  LocalidaTipo;
+    
+    public LocalidadDTO(){}
+    public LocalidadDTO(Integer localidaId, String localida, String localidaTipo) {
+        LocalidaId = localidaId;
+        Localida = localida;
+        LocalidaTipo = localidaTipo;
+    }
+    public Integer getLocalidaId() {
+        return LocalidaId;
+    }
+    public void setLocalidaId(Integer localidaId) {
+        LocalidaId = localidaId;
+    }
+    public String getLocalida() {
+        return Localida;
+    }
+    public void setLocalida(String localida) {
+        Localida = localida;
+    }
+    public String getLocalidaTipo() {
+        return LocalidaTipo;
+    }
+    public void setLocalidaTipo(String localidaTipo) {
+        LocalidaTipo = localidaTipo;
+    }
+
+    @Override
+    public String toString(){
+        return getClass().getName()
+        + "\n LocalidaId  : " + getLocalidaId() 
+        + "\n Localida    : " + getLocalida() 
+        + "\n LocalidaTipo: " + getLocalidaTipo() ;
+    }
+}
+```
+
+***DAO***
+
+```java
+public class LocalidadDAO extends SQLiteDataHelper  {
+    
+    public LocalidadDTO readBy(Integer id) throws Exception {
+        LocalidadDTO oS = new LocalidadDTO();
+        String query =
+         " SELECT lo.IdLocalida LocalidaId, lo.Nombre Localida, le.Nombre LocalidaTipo"
+        +" FROM localida               lo "
+        +" JOIN LocalidaEstructura     le ON lo.IdLocalidaEstructura = le.IdLocalidaEstructura"
+        +" WHERE   lo.Estado = 'A' "
+        +" AND     le.Estado = 'A' "
+        +" AND     lo.IdLocalida = "+ id.toString() ;
+        try {
+            Connection conn = openConnection();         // conectar a DB     
+            Statement  stmt = conn.createStatement();   // CRUD : select * ...    
+            ResultSet  rs   = stmt.executeQuery(query);  // ejecutar la
+            while (rs.next()) {
+                oS = new LocalidadDTO(rs.getInt(1)              // LocalidaId
+                                    ,rs.getString(2)            // Localida             
+                                    ,rs.getString(3) );         // LocalidaTipo         
+            }
+        } 
+        catch (SQLException e) {
+            throw e;    //new AppException(e, getClass(), "getAllSexo()");
+        }
+        return oS;
+    }
+
+    public List<LocalidadDTO> readAll() throws Exception {
+        List <LocalidadDTO> lst = new ArrayList<>();
+        String query =
+        " SELECT lo.IdLocalida LocalidaId, lo.Nombre Localida, le.Nombre LocalidaTipo"
+       +" FROM localida               lo "
+       +" JOIN LocalidaEstructura     le ON lo.IdLocalidaEstructura = le.IdLocalidaEstructura"
+       +" WHERE   lo.Estado = 'A' "
+       +" AND     le.Estado = 'A' ";
+        try {
+            Connection conn = openConnection();         // conectar a DB     
+            Statement  stmt = conn.createStatement();   // CRUD : select * ...    
+            ResultSet rs   = stmt.executeQuery(query);    // ejecutar la
+            while (rs.next()) {
+                LocalidadDTO s = new LocalidadDTO(rs.getInt(1)              // LocalidaId
+                                                ,rs.getString(2)            // Localida             
+                                                ,rs.getString(3) );         // LocalidaTipo  
+                lst.add(s);
+            }
+        } 
+        catch (SQLException e) {
+            throw e;    //new AppException(e, getClass(), "getAllSexo()");
+        }
+        return lst; 
+    }
+
+    public List<LocalidadDTO> readAllEstructura(String tipo)  throws Exception {
+        List <LocalidadDTO> lst = new ArrayList<>();
+        String query =
+        " SELECT lo.IdLocalida LocalidaId, lo.Nombre Localida, le.Nombre LocalidaTipo"
+       +" FROM localida               lo "
+       +" JOIN LocalidaEstructura     le ON lo.IdLocalidaEstructura = le.IdLocalidaEstructura"
+       +" WHERE   lo.Estado = 'A' "
+       +" AND     le.Estado = 'A' "
+       +" AND     lower(le.Nombre) = " + ((tipo.equals("Provincia"))
+                                        ? "'Provincia'".toLowerCase() 
+                                        : "'Cantón'".toLowerCase());
+        System.out.println(query);                                    
+        try {
+            Connection conn = openConnection();         // conectar a DB     
+            Statement  stmt = conn.createStatement();   // CRUD : select * ...    
+            ResultSet rs   = stmt.executeQuery(query);    // ejecutar la
+            while (rs.next()) {
+                LocalidadDTO s = new LocalidadDTO(rs.getInt(1)              // LocalidaId
+                                                ,rs.getString(2)            // Localida             
+                                                ,rs.getString(3) );         // LocalidaTipo  
+                lst.add(s);
+            }
+        } 
+        catch (SQLException e) {
+            throw e;    //new AppException(e, getClass(), "getAllSexo()");
+        }
+        return lst; 
+    }
+}
+```
+
+Al ser una tabla virtual, estructura temporal que cambia en tiempo de ejecución, no necesita implementar de IDAO y tener todos los métodos CRUD.
+
+- En BL:
+
+```java
+public class LocalidadBL {
+    private LocalidadDAO lDAO= new LocalidadDAO();
+    
+    public LocalidadBL() {}
+
+    public List<LocalidadDTO> getAll() throws Exception{
+        return lDAO.readAll();
+    }
+    
+    public List<LocalidadDTO> getAllProvincia() throws Exception{
+        return lDAO.readAllEstructura("Provincia");
+    }
+    
+    public List<LocalidadDTO> getAllCanton() throws Exception{
+        return lDAO.readAllEstructura("Cantón");
+    }
+
+    public LocalidadDTO getById(int id) throws Exception{
+        return lDAO.readBy(id);
+    }
+}
+```
+
+Verificamos el funcionamiento del código en App:
+
+```java
+public class App {
+    public static void main(String[] args) throws Exception {
+        LocalidadBL lbl = new LocalidadBL();
+        for (LocalidadDTO l : lbl.readAll()) {
+            System.out.println(l.toString());
+        }
+
+       //Presentar solo las provincias 
+        for (LocalidadDTO l : lbl.getAllProvincia()) {
+            System.out.println(l.toString());
+        }
+    }
+}
+```
+
+Para empezar a codificar la capa UserInterface, se crean las siguientes carpetas:
+
+1. **Form:** Corresponde a los paneles con los que se va a trabajar para el proyecto.
+2. **CustomerControl:** Concierne a los botones personalizados por parte del programador.
+3. **Resource:** Está relacionada con los iconos e imagenes externas que deseamos mostrar o utilizar.
+
+***Splash***
+
+```java
+public abstract class SplashScreenForm   {
+    private static JFrame       frmSplash;
+    private static JProgressBar prbLoaging;
+    private static ImageIcon    icoImagen ;
+    private static JLabel       lblSplash ;
+
+    public static void show() {
+        URL imageURL = SplashScreenForm.class.getResource("/UserInterface/Resource/Img/Splah.png");
+        icoImagen  = new ImageIcon(imageURL);
+        lblSplash  = new JLabel(icoImagen);
+        
+        prbLoaging = new JProgressBar(0, 100);
+        prbLoaging.setStringPainted(true);
+        
+        frmSplash = new JFrame("Splash Screen");
+        frmSplash.setUndecorated(true);
+        frmSplash.getContentPane().add(lblSplash, BorderLayout.CENTER);
+        frmSplash.add(prbLoaging, BorderLayout.SOUTH);
+        frmSplash.setSize(icoImagen.getIconWidth(), icoImagen.getIconHeight());
+        frmSplash.setLocationRelativeTo(null); // Centrar en la pantalla
+       
+        frmSplash.setVisible(true);
+        for (int i = 0; i <= 100; i++) {
+            try {
+                Thread.sleep(50); // Espera por 50 milisegundos
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            prbLoaging.setValue(i);
+        }
+        frmSplash.setVisible(false);
+    }
+}
+
+```
+
+> Se coloca abstract puesto que solo debe presentarse una vez y para que tampoco se creen objetos splash por cualquier parte.
+
+Para las propiedades o atributos de cada clase de esta capa se requiere trabajar con estándares de programación, por ejemplo:
+
+```java
+    private static JFrame       frmSplash;
+    private static JProgressBar prbLoaging;
+    private static ImageIcon    icoImagen ;
+    private static JLabel       lblSplash ;
+```
+
+![imagen 88](88.png)
+
+```java
+public class MainForm extends JFrame{
+    JPanel pnlMenu, pnlContainer;
+ 
+    public MainForm(String tilteApp){
+        setTitle(tilteApp);
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        pnlMenu = createMenuPanel();
+        pnlContainer = new LoginPanel();
+        //createImagePanel();
+
+        // Crear un contenedor para los dos paneles usando BorderLayout
+        Container container = getContentPane();
+        container.setLayout(new BorderLayout());
+
+        // Agregar los paneles al contenedor
+        container.add(pnlMenu, BorderLayout.WEST);
+        container.add(pnlContainer, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    private JPanel createMenuPanel() {
+        JPanel pnlMenu = new JPanel();
+        pnlMenu.setLayout(new BoxLayout(pnlMenu, BoxLayout.Y_AXIS));
+
+        JButton button1 = new JButton("Opción 1");
+        JButton button2 = new JButton("Opción 2");
+
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Lógica para la opción 1
+                JOptionPane.showMessageDialog(MainForm.this, "Seleccionaste Opción 1");
+            }
+        });
+
+        button2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Lógica para la opción 2
+                JOptionPane.showMessageDialog(MainForm.this, "Seleccionaste Opción 2");
+            }
+        });
+
+        pnlMenu.add(button1);
+        pnlMenu.add(button2);
+
+        return pnlMenu;
+    }
+
+    private JPanel createImagePanel() {
+        JPanel pnlContainer = new JPanel();
+
+        // Asegúrate de tener una imagen llamada "sample_image.jpg" en la misma carpeta que tu código
+        String imagePath = "/UserInterface/Resource/Img/Splah.png";
+
+        try {
+            URL imageURL = SplashScreenForm.class.getResource("/UserInterface/Resource/Img/IABot.png");
+            ImageIcon imageIcon = new ImageIcon(imageURL); //new ImageIcon(new File(imagePath).getCanonicalPath());
+            JLabel label = new JLabel(imageIcon);
+            pnlContainer.add(label,BorderLayout.CENTER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return pnlContainer;
+    }   
+}
+```
+MainForm sin panel:
+
+![imagen 90](90.png)
+
+MainForm con panel:
+
+![imagen 89](89.png)
 
 ## Clase # 39
     Fecha: 22 de febrero del 2024
 -------
-### <span style="color:gray"></span>
+### <span style="color:gray">GUI - parte 2</span>
+
+
 
 ## Clase # 40
     Fecha: 23 de febrero del 2024
 -------
 ### <span style="color:turquoise"></span>
 
-## Clase # 41
-    Fecha: 24 de febrero del 2024
--------
-### <span style="color:salmon"></span>
 
