@@ -3309,6 +3309,360 @@ MainForm con panel:
 -------
 ### <span style="color:gray">GUI - parte 2</span>
 
+***Formulario***
+
+Un formulario es una ventana o pantalla que contiene controles y elementos de interfaz de usuario, como botones, cuadros de texto, etiquetas, casillas de verificación, etc. Los formularios son la base sobre la cual se construye la interfaz de usuario de una aplicación. Son la ventana principal o secundaria en la que los usuarios interactúan con la aplicación.
+
+***Panel***
+
+Un panel es un contenedor que se utiliza para organizar y agrupar otros controles y elementos de la interfaz de usuario dentro de un formulario. Los paneles se utilizan para crear diseños más complejos y organizados, permitiendo dividir la ventana principal en áreas más pequeñas y controladas.
+
+***Tipos de distribuciones***
+
+1. **Distribución en horizontal:** La distribución en horizontal en una GUI (Interfaz Gráfica de Usuario) se refiere a la disposición de elementos o componentes de la interfaz de usuario a lo largo de un eje horizontal. En otras palabras, los elementos se colocan uno al lado del otro en una línea horizontal.
+
+2. **Tipo acordeón:** Un diseño tipo "acordeón" en una GUI se refiere a un estilo de disposición en el que los elementos se muestran de forma plegada y se expanden o colapsan según la interacción del usuario. Este diseño se asemeja a un acordeón musical, donde una sección se expande mientras que otras se contraen.
+
+3. **Distribución en vertical:** La distribución en vertical en una GUI (Interfaz Gráfica de Usuario) se refiere a la disposición de elementos o componentes de la interfaz de usuario a lo largo de un eje vertical. En otras palabras, los elementos se colocan uno encima del otro, formando una columna vertical.
+
+4. **Grillado:**  O gridding, se refiere al proceso de organizar y alinear elementos de la interfaz de usuario en una cuadrícula o rejilla. Este enfoque de diseño se utiliza comúnmente para garantizar que los elementos de la interfaz de usuario estén alineados de manera uniforme y ordenada.
+
+![imagen 91](91.png)
+
+En customer control se pueden personalizar los elementos que se van a ocupar en todos los paneles, obteniendo una generalización o un estándar de esos componentes y del programa como tal, por ejemplo:
+
+- MatButton
+- MatLabelText
+- MatStyle 
+- MatTextBox
+
+Ejemplo en código:
+
+```java
+public class PatStyle {
+    public static final Color COLOR_FONT = new Color(191,120,82);
+    public static final Color COLOR_FONT_LIGHT = new Color(100,100,100);
+    public static final Color COLOR_CURSOR = Color.black;
+    public static final Color COLOR_BORDER = new Color(50,50,50);
+    public static final Font FONT = new Font("JetBrainsMono", Font.PLAIN, 14);
+    public static final Font FONT_BOLD = new Font("JetBrainsMono", Font.BOLD | Font.PLAIN, 14);
+    public static final Font FONT_SMALL = new Font("JetBrainsMono", Font.BOLD | Font.PLAIN, 14);
+
+    public static final int ALIGNMENT_LEFT = SwingConstants.LEFT;
+    public static final int ALIGNMENT_RIGHT = SwingConstants.RIGHT;
+    public static final int ALIGNMENT_CENTER = SwingConstants.CENTER;
+    
+    public static final Cursor CURSOR_HAND = new Cursor(Cursor.HAND_CURSOR);
+    public static final Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
+}
+```
+
+```java
+public class PatLabel extends JLabel{
+    public PatLabel(){
+        customizeComponent();
+    }
+
+    public PatLabel (String text){
+        setText(text);
+        customizeComponent();
+    }
+
+    private void customizeComponent (){
+        setCustomizeComponent(getText(), PatStyle.FONT, PatStyle.COLOR_FONT_LIGHT, PatStyle.ALIGNMENT_LEFT);
+    }
+
+    public void setCustomizeComponent(String text, Font font, Color color, int alignment){
+        setText(text);
+        setFont(font);
+        setOpaque(false);
+        setBackground(null);
+        setForeground(color);
+        setHorizontalAlignment(alignment);;
+    }
+}
+```
+
+![imagen 92](92.png)
+
+**Conexión de BL con GUI**
+
+***Paginación:*** Se refiere a una técnica utilizada para dividir y presentar grandes conjuntos de datos de manera organizada y manejable, especialmente en aplicaciones que muestran listas o tablas de datos.
+
+Ejemplo en código:
+
+```java
+public class PatPnlSexo extends JPanel implements ActionListener{
+    private Integer idSexo, idMaxSexo;
+    private SexoBL  sexoBL  = null;
+    private SexoDTO   sexo  = null;
+
+    public PatPnlSexo() throws Exception{
+        setGridBagLayout();
+        loadData();
+        showData();
+        showTable();
+
+        btnIni.addActionListener(this);
+        btnAnt.addActionListener(this);
+        btnSig.addActionListener(this);
+        btnFin.addActionListener(this);
+        btnGuardar.addActionListener(this);
+
+        // Otra forma de poner escuchadores
+        btnNuevo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) 
+            {   btnNuevoClick(e);   }
+        });
+
+        btnEliminar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) 
+            {   try {
+                btnEliminarClick(e);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }   
+            }
+        });
+    }
+    
+    private void loadData() throws Exception {
+        idSexo      = 1;
+        sexoBL      = new SexoBL();
+        sexo        = sexoBL.getBy(idSexo);
+        //idMaxSexo   = sexoBL.getMaxIdSexo();
+    }
+
+    private void showData() {
+        boolean sexoNull = (sexo == null);
+        txtIdSexo.setText((sexoNull) ? " " : sexo.getIdSexo().toString());            
+        txtNombre.setText((sexoNull) ? " " : sexo.getNombre());
+        //lblTotalReg.setText(idSexo.toString() + " de " + idMaxSexo.toString());
+    }
+
+    private void btnNuevoClick(ActionEvent e) {
+        sexo = null;
+        showData();
+    } 
+    private void btnEliminarClick(ActionEvent e) throws Exception {
+        if (JOptionPane.showConfirmDialog(this, "¿Está seguro que desea Eliminar?", "Eliminar...",
+        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+               
+            if(!sexoBL.delete(sexo.getIdSexo()))
+                JOptionPane.showMessageDialog(this, "Error al eliminar...!", "ERROR", JOptionPane.OK_OPTION);
+
+            loadData();
+            showData();
+            showTable();
+        }
+    }
+    private void btnGuardarClick(ActionEvent e) throws HeadlessException, Exception {
+        boolean sexoNull = (sexo == null);
+        if (JOptionPane.showConfirmDialog(this, "¿Seguro que desea guardar?", (sexoNull)?"Agregar...": "Actualizar...", 
+            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            
+            loadData();
+            showData();
+            showTable();
+        }
+    } 
+
+    private void showTable() throws Exception {
+        String[] header = {"Id", "Nombre", "Estado"};
+        Object[][] data = new Object[sexoBL.getAll().size()][3];  
+        int index = 0;
+        for(SexoDTO s : sexoBL.getAll()) {
+            data[index][0] = s.getIdSexo();
+            data[index][1] = s.getNombre();
+            data[index][2] = s.getEstado();
+            index++;
+        }
+        
+        JTable table  = new JTable(data, header);
+        table.setShowHorizontalLines(true);
+        table.setGridColor(Color.lightGray);
+        table.setRowSelectionAllowed(true);
+        table.setColumnSelectionAllowed(false);
+
+        table.setPreferredScrollableViewportSize(new Dimension(450, 150));
+        table.setFillsViewportHeight(true);
+
+        //table.setBorder(border);
+        // pnlTabla.setBorder( BorderFactory.createTitledBorder(
+        //                     BorderFactory.createEtchedBorder(), " SEXO ", TitledBorder.CENTER, TitledBorder.TOP));
+      
+        pnlTabla.removeAll();
+        pnlTabla.add(table);
+        JScrollPane scrollPane = new JScrollPane(table);
+        pnlTabla.add(scrollPane);
+
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){ 
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+          
+                int col = 0;
+                int row = table.getSelectedRow();
+                String strIdSexo = table.getModel().getValueAt(row, col).toString();
+
+                idSexo = Integer.parseInt(strIdSexo);
+                try {
+                    sexo    = sexoBL.getBy(idSexo);
+                    showData(); 
+                } catch (Exception e1) { }  
+                System.out.println("Tabla.Selected: " + strIdSexo);
+            }
+        });
+    }
+
+    
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == btnIni)
+            idSexo  = 1;
+        if(e.getSource() == btnAnt  &&  (idSexo>1) )
+            idSexo--;
+        if(e.getSource() == btnSig  &&  (idSexo<idMaxSexo))
+            idSexo++;
+        if(e.getSource() == btnFin)
+            idSexo = idMaxSexo;
+    }
+
+/************************
+ * FormDesing : pat_mic
+ ************************/ 
+    private PatLabel  
+            lblTitulo  = new PatLabel("SEXO"          ),
+            lblIdSexo  = new PatLabel("Codigo:      " ),
+            lblNombre  = new PatLabel("Descripción: " ),
+            lblTotalReg= new PatLabel("  0 de 0  "    );
+    private PatTextBox  
+            txtIdSexo  = new PatTextBox (),
+            txtNombre  = new PatTextBox ();
+    private PatButton  
+            btnIni     = new PatButton(" |< "), 
+            btnAnt     = new PatButton(" << "),            
+            btnSig     = new PatButton(" >> "),
+            btnFin     = new PatButton(" >| ");
+    private PatButton
+            btnNuevo   = new PatButton("Nuevo"),            
+            btnGuardar = new PatButton("Guardar"),
+            btnCancelar= new PatButton("Cancelar"),
+            btnEliminar= new PatButton("Eliminar");
+    private JPanel 
+            pnlTabla   = new JPanel(),
+            pnlBtnCRUD = new JPanel(new FlowLayout()),
+            pnlBtnPage = new JPanel(new FlowLayout());
+    private Border  
+            line       = new LineBorder(Color.lightGray),
+            margin     = new EmptyBorder(5, 5, 5, 5),
+            border     = new CompoundBorder(line, margin);
+    
+/************************
+ * Customize : Form
+ ************************/ 
+    public void setGridBagLayout(){
+        //setLayout(new GridBagLayout());
+        GridBagConstraints gbc= new GridBagConstraints();
+        txtIdSexo.setEnabled(false);
+        
+        // Panel.Paginacion.Tabla
+        pnlBtnPage.add(btnIni);       
+        pnlBtnPage.add(btnAnt);  
+        pnlBtnPage.add(new PatLabel(" Page: [ "));      
+        pnlBtnPage.add(lblTotalReg);        
+        pnlBtnPage.add(new PatLabel(" ] "));      
+        pnlBtnPage.add(btnSig);
+        pnlBtnPage.add(btnFin);
+
+        // Panel.CRUD
+        pnlBtnCRUD.add(btnNuevo);
+        pnlBtnCRUD.add(btnGuardar);
+        pnlBtnCRUD.add(btnCancelar);
+        pnlBtnCRUD.add(btnEliminar);
+        pnlBtnCRUD.setBorder(border);
+
+        // GridBagConstraints.Separación entre componentes
+        gbc.insets=new Insets(5,5,5,5);    
+        
+        // GridBagConstraints.ponerComponentes
+        gbc.gridy = 0;       gbc.gridx=0;  //| fila,  columna
+        gbc.gridwidth=3;                   //| celdas a unir
+        add(lblTitulo, gbc);               //| agrega el control
+
+        gbc.gridy = 1;       gbc.gridx=0;   
+        gbc.gridwidth=1;                     
+        add(new JLabel("■ Sección de datos: "), gbc);                 
+
+        gbc.gridy = 2;       gbc.gridx=0;
+        gbc.gridwidth=3;                   //| celdas a unir
+        gbc.ipady = 150;                   //| tamaño alto
+        gbc.ipadx = 450;                   //| tamaño ancho ... luego se debe restablecer a 1 o 0
+        pnlTabla.add(new Label("Loading data..."));
+        //pnlTabla.setBorder(border);
+        add(pnlTabla, gbc);
+        
+        gbc.ipady = 1;                    //| Restablecer el tamaño de fila y columna
+        gbc.ipadx = 1;
+        
+        gbc.gridy = 3;       gbc.gridx=0;   
+        gbc.gridwidth=3;  
+        add(pnlBtnPage, gbc);  
+
+        gbc.gridy = 4;       gbc.gridx=0; 
+        gbc.gridwidth=1;    
+        add(new JLabel("■ Sección de registro: "), gbc);  
+
+        gbc.gridy = 5;       gbc.gridx=0;     add(lblIdSexo,  gbc);   
+        gbc.gridy = 5;       gbc.gridx=1;     add(txtIdSexo,  gbc);   
+
+        gbc.gridy = 6;       gbc.gridx=0;     add(lblNombre, gbc);        
+        gbc.gridy = 6;       gbc.gridx=1;     add(txtNombre, gbc);
+        gbc.gridy = 6;       gbc.gridx=2;     add(new JLabel("*"), gbc);  
+
+        gbc.gridy = 7;       gbc.gridx=0;
+        gbc.gridwidth=3;
+        gbc.insets    = new Insets(30,0,0,0); 
+        gbc.fill=GridBagConstraints.HORIZONTAL;
+        add(pnlBtnCRUD, gbc);
+    }
+
+}
+```
+
+![imagen 94](94.png)
+
+**Manejo de excepciones**
+
+El manejo de excepciones es un concepto fundamental en la programación que se refiere a la forma en que un programa detecta, informa y maneja situaciones excepcionales o inesperadas que pueden ocurrir durante su ejecución. Estas situaciones pueden incluir errores de programación, condiciones imprevistas, fallos en el hardware o cualquier otro evento que pueda causar que el programa no funcione correctamente.
+
+La gestión de errores es una capa vertical, puesto que se pueden presentar en el DAC, BL o GUI. En este caso los errores deben guardarse en un archivo y presentar un mensaje especial para el usuario, ya que no debemos dar toda la información del error o de los errores al usuario, el cual puede ser un hacker.
+
+![imagen 95](95.png)
+
+***LOG***
+
+El "LOG" (registro) se refiere al registro de información sobre las excepciones que ocurren durante la ejecución de un programa. Cuando una excepción es lanzada, es importante registrar detalles relevantes sobre la excepción para el análisis posterior y la resolución de problemas.
+
+En una capa llamada Framework, se diseña la manera de gestionar las excepciones.
+
+Ejemplo de un manejo de excepciones:
+
+```java
+public class PatException extends Exception {
+
+    public PatException(String e, String clase, String metodo) {
+        //grabar el log
+        System.out.println("[ERROR EN IABot para el lOG] " + clase +"."+ metodo +" : "+ e );
+    }
+    
+    @Override
+    public String getMessage(){
+        return "no seas sapo :)";
+    }
+}
+```
+
 
 
 ## Clase # 40
